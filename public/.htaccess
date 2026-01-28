@@ -1,0 +1,33 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+    
+    # allow social media crawlers to work by redirecting them to a server-rendered static version on the page
+    RewriteCond %{HTTP_USER_AGENT} (facebookexternalhit/[0-9]|Twitterbot|Pinterest|linkedinbot|WhatsApp|Viber|SkypeUriPreview|Google.*snippet)
+    RewriteRule blog/(.*) https://xnyder.com/post_crawl.php?other=$1 [R=301,L]
+
+    # allow social media crawlers to work by redirecting them to a server-rendered static version on the page
+    RewriteCond %{HTTP_USER_AGENT} (facebookexternalhit/[0-9]|Twitterbot|Pinterest|linkedinbot|WhatsApp|Viber|SkypeUriPreview|Google.*snippet)
+    RewriteRule project/(.*) https://xnyder.com/project_crawl.php?other=$1 [R=301,L]
+    
+    # allow social media crawlers to work by redirecting them to a server-rendered static version on the page
+    RewriteCond %{HTTP_USER_AGENT} (facebookexternalhit/[0-9]|Twitterbot|Pinterest|linkedinbot|WhatsApp|Viber|SkypeUriPreview|Google.*snippet)
+    RewriteRule resource/(.*) https://xnyder.com/resource_crawl.php?other=$1 [R=301,L]
+    
+    # Redirect to https and remove www
+    RewriteCond %{HTTPS} off [OR]
+    RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]
+    RewriteRule ^ https://%1%{REQUEST_URI} [L,R=301,NE]
+
+    # Existing rules
+    RewriteRule ^index\.html$ - [L]
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-l
+    RewriteRule . /index.html [L]
+</IfModule>
+
+<IfModule mod_mime.c>
+    # Manifest file
+    AddType application/manifest+json webmanifest
+</IfModule>
