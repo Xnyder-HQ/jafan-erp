@@ -1,13 +1,15 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router';
 import { Navbar } from '../../components/layout';
-import { Renew, Add, Edit, TrashCan, Download } from '@carbon/icons-react';
+import { Renew, Edit, Download } from '@carbon/icons-react';
+// import { Add, TrashCan } from '@carbon/icons-react';
 import { extractErrorMessage } from '../../utils/formatters';
 import { useGeneral } from '../../context/GeneralContext';
 import businessRulesService from '../../services/businessRules.service';
 import type { BusinessRule } from '../../services/businessRules.service';
 import { Alert, showAlert, Pagination, EmptyState, ErrorState, SearchInput, DateRangeFilter } from '../../components/common';
-import { ConfirmModal, ExportModal } from '../../components/modals';
+import { ExportModal } from '../../components/modals';
+// import { ConfirmModal } from '../../components/modals';
 import { modalShow } from '@richaadgigi/stylexui';
 
 interface DateRange {
@@ -23,21 +25,21 @@ const AllBusinessRules = () => {
   const [rules, setRules] = useState<BusinessRule[]>([]);
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState('');
-  const [actionError, setActionError] = useState('');
+  // const [actionError, setActionError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [pageSize, setPageSize] = useState(50);
-  const [selectedRule, setSelectedRule] = useState<BusinessRule | null>(null);
+  // const [selectedRule, setSelectedRule] = useState<BusinessRule | null>(null);
 
   const accessIds = getAccessIds('administration', 'business-rules');
   const moduleId = accessIds?.module_unique_id;
   const subModuleId = accessIds?.sub_module_unique_id;
 
   const accessResult = moduleId ? checkAccess(moduleId, subModuleId) : { hasAccess: false, accessTypes: [] };
-  const canAdd = accessResult.accessTypes.includes('add');
+  // const canAdd = accessResult.accessTypes.includes('add');
   const canEdit = accessResult.accessTypes.includes('edit');
-  const canDelete = accessResult.accessTypes.includes('delete');
+  // const canDelete = accessResult.accessTypes.includes('delete');
 
   const handleResponse = (response: any) => {
     if (response.success && response.data) {
@@ -125,20 +127,20 @@ const AllBusinessRules = () => {
     }
   }, [moduleId, subModuleId, currentPage, pageSize]);
 
-  const openDeleteModal = (rule: BusinessRule) => {
-    setSelectedRule(rule);
-    modalShow('delete-rule-modal');
-  };
+  // const openDeleteModal = (rule: BusinessRule) => {
+  //   setSelectedRule(rule);
+  //   modalShow('delete-rule-modal');
+  // };
 
-  const handleDeleteRule = async () => {
-    if (!moduleId || !subModuleId || !selectedRule) {
-      return { success: false, message: 'Unable to delete business rule' };
-    }
-    return businessRulesService.deleteBusinessRule(selectedRule.unique_id, {
-      module_unique_id: moduleId,
-      sub_module_unique_id: subModuleId,
-    });
-  };
+  // const handleDeleteRule = async () => {
+  //   if (!moduleId || !subModuleId || !selectedRule) {
+  //     return { success: false, message: 'Unable to delete business rule' };
+  //   }
+  //   return businessRulesService.deleteBusinessRule(selectedRule.unique_id, {
+  //     module_unique_id: moduleId,
+  //     sub_module_unique_id: subModuleId,
+  //   });
+  // };
 
   const handlePageSizeChange = (newSize: number) => {
     setPageSize(newSize);
@@ -235,6 +237,7 @@ const AllBusinessRules = () => {
               <span className="icon-container"><Renew size={16} /></span>
               Refresh
             </button>
+            {/*
             {canAdd && (
               <button
                 onClick={() => navigate('/dashboard/users/rules/add')}
@@ -245,6 +248,7 @@ const AllBusinessRules = () => {
                 Add Rule
               </button>
             )}
+            */}
           </div>
         </div>
 
@@ -274,7 +278,7 @@ const AllBusinessRules = () => {
                     <th>Type</th>
                     <th>Applies To</th>
                     <th>Active</th>
-                    {(canEdit || canDelete) && <th>Actions</th>}
+                    {canEdit && <th>Actions</th>}
                   </tr>
                 </thead>
                 <tbody>
@@ -295,19 +299,18 @@ const AllBusinessRules = () => {
                           {rule.is_active ? 'Yes' : 'No'}
                         </span>
                       </td>
-                      {(canEdit || canDelete) && (
+                      {canEdit && (
                         <td>
                           <div className="xui-d-flex xui-flex-ai-center xui-grid-gap-half">
-                            {canEdit && (
-                              <button
-                                onClick={() => navigate(`/dashboard/users/rules/edit/${rule.unique_id}`)}
-                                className="xui-d-flex xui-flex-ai-center xui-flex-jc-center xui-w-32 xui-h-32 xui-bdr-rad-half xui-cursor-pointer"
-                                style={{ backgroundColor: 'var(--info-light)', border: 'none', color: 'var(--info)' }}
-                                title="Edit Rule"
-                              >
-                                <Edit size={16} />
-                              </button>
-                            )}
+                            <button
+                              onClick={() => navigate(`/dashboard/users/rules/edit/${rule.unique_id}`)}
+                              className="xui-d-flex xui-flex-ai-center xui-flex-jc-center xui-w-32 xui-h-32 xui-bdr-rad-half xui-cursor-pointer"
+                              style={{ backgroundColor: 'var(--info-light)', border: 'none', color: 'var(--info)' }}
+                              title="Edit Rule"
+                            >
+                              <Edit size={16} />
+                            </button>
+                            {/*
                             {canDelete && (
                               <button
                                 onClick={() => openDeleteModal(rule)}
@@ -318,6 +321,7 @@ const AllBusinessRules = () => {
                                 <TrashCan size={16} />
                               </button>
                             )}
+                            */}
                           </div>
                         </td>
                       )}
@@ -338,9 +342,10 @@ const AllBusinessRules = () => {
         </div>
       </div>
 
-      <Alert id="error-alert" type="error" title="Error" message={actionError} />
+      {/* <Alert id="error-alert" type="error" title="Error" message={actionError} /> */}
       <Alert id="success-alert" type="success" title="Success" message={successMessage} />
 
+      {/*
       <ConfirmModal
         id="delete-rule-modal"
         title="Delete Business Rule"
@@ -355,6 +360,7 @@ const AllBusinessRules = () => {
         setSuccessMessage={setSuccessMessage}
         showAlert={showAlert}
       />
+      */}
 
       <ExportModal
         id="export-rules-modal"
