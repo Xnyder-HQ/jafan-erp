@@ -43,6 +43,8 @@ export interface AddUserPayload {
   middlename?: string;
   lastname: string;
   email: string;
+  password: string;
+  confirmPassword: string;
   phone_number?: string;
   alt_phone_number?: string;
   gender: string;
@@ -51,7 +53,7 @@ export interface AddUserPayload {
   country?: string;
   state?: string;
   city?: string;
-  profile_image: string;
+  profile_image?: string;
   role_unique_id?: string;
 }
 

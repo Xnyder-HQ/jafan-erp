@@ -8,7 +8,7 @@ import { formatCurrency, extractErrorMessage } from '../../utils/formatters';
 import vendorPaymentsService from '../../services/vendorPayments.service';
 import vendorsService, { type Vendor } from '../../services/vendors.service';
 import purchaseOrdersService, { type PurchaseOrder } from '../../services/purchaseOrders.service';
-import { Alert, showAlert } from '../../components/common';
+import { Alert, showAlert, ImageUpload } from '../../components/common';
 
 interface VendorPaymentForm {
   vendor_unique_id: string;
@@ -18,6 +18,8 @@ interface VendorPaymentForm {
   payment_method: string;
   receipt_reference: string;
   notes: string;
+  receipt_image: string;
+  receipt_image_public_id: string;
 }
 
 const AddVendorPayment = () => {
@@ -46,6 +48,7 @@ const AddVendorPayment = () => {
     register,
     handleSubmit,
     watch,
+    setValue,
     formState: { errors },
   } = useForm<VendorPaymentForm>({
     defaultValues: {
@@ -56,8 +59,22 @@ const AddVendorPayment = () => {
       payment_method: '',
       receipt_reference: '',
       notes: '',
+      receipt_image: '',
+      receipt_image_public_id: '',
     },
   });
+
+  const receiptImage = watch('receipt_image');
+
+  const handleImageChange = (url: string, publicId: string) => {
+    setValue('receipt_image', url);
+    setValue('receipt_image_public_id', publicId);
+  };
+
+  const handleImageError = (errorMsg: string) => {
+    setError(errorMsg);
+    showAlert('error-alert');
+  };
 
   const watchVendor = watch('vendor_unique_id');
 
@@ -132,6 +149,8 @@ const AddVendorPayment = () => {
         payment_method: data.payment_method,
         receipt_reference: data.receipt_reference || undefined,
         notes: data.notes || undefined,
+        receipt_image: data.receipt_image || undefined,
+        receipt_image_public_id: data.receipt_image_public_id || undefined,
       };
 
       const response = await vendorPaymentsService.addVendorPayment(payload, {
@@ -284,6 +303,14 @@ const AddVendorPayment = () => {
                   rows={4}
                 />
               </div>
+
+              <ImageUpload
+                value={receiptImage}
+                onChange={handleImageChange}
+                onError={handleImageError}
+                label="Receipt Image"
+                folder="jafanerp/vendor-payments"
+              />
             </div>
           </div>
 

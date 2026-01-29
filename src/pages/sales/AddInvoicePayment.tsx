@@ -7,7 +7,7 @@ import { useGeneral } from '../../context/GeneralContext';
 import { formatCurrency, extractErrorMessage } from '../../utils/formatters';
 import invoicesService, { type Invoice } from '../../services/invoices.service';
 import invoicePaymentsService from '../../services/invoicePayments.service';
-import { Alert, showAlert, ErrorState } from '../../components/common';
+import { Alert, showAlert, ErrorState, ImageUpload } from '../../components/common';
 
 interface PaymentFormData {
   payment_date: string;
@@ -15,6 +15,8 @@ interface PaymentFormData {
   amount_paid: string;
   receipt_reference: string;
   notes: string;
+  receipt_image: string;
+  receipt_image_public_id: string;
 }
 
 const PAYMENT_METHODS = [
@@ -42,6 +44,8 @@ const AddInvoicePayment = () => {
   const {
     register,
     handleSubmit,
+    setValue,
+    watch,
     formState: { errors },
   } = useForm<PaymentFormData>({
     defaultValues: {
@@ -50,8 +54,22 @@ const AddInvoicePayment = () => {
       amount_paid: '',
       receipt_reference: '',
       notes: '',
+      receipt_image: '',
+      receipt_image_public_id: '',
     },
   });
+
+  const receiptImage = watch('receipt_image');
+
+  const handleImageChange = (url: string, publicId: string) => {
+    setValue('receipt_image', url);
+    setValue('receipt_image_public_id', publicId);
+  };
+
+  const handleImageError = (errorMsg: string) => {
+    setError(errorMsg);
+    showAlert('error-alert');
+  };
 
   const fetchInvoice = useCallback(async () => {
     if (!moduleId || !subModuleId || !invoiceId) {
@@ -116,6 +134,8 @@ const AddInvoicePayment = () => {
         amount_paid: amountPaid,
         ...(data.receipt_reference && { receipt_reference: data.receipt_reference }),
         ...(data.notes && { notes: data.notes }),
+        ...(data.receipt_image && { receipt_image: data.receipt_image }),
+        ...(data.receipt_image_public_id && { receipt_image_public_id: data.receipt_image_public_id }),
       };
 
       const response = await invoicePaymentsService.addInvoicePayment(payload, {
@@ -371,6 +391,14 @@ const AddInvoicePayment = () => {
                       {...register('notes')}
                     />
                   </div>
+
+                  <ImageUpload
+                    value={receiptImage}
+                    onChange={handleImageChange}
+                    onError={handleImageError}
+                    label="Receipt Image"
+                    folder="jafanerp/invoice-payments"
+                  />
                 </div>
               </div>
 

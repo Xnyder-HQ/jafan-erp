@@ -6,7 +6,7 @@ import { ArrowLeft, View, ViewOff } from '@carbon/icons-react';
 import { useGeneral } from '../../context/GeneralContext';
 import usersService from '../../services/users.service';
 import type { RoleOption } from '../../services/users.service';
-import { Alert, showAlert, ImageUpload } from '../../components/common';
+import { Alert, showAlert } from '../../components/common';
 import { extractErrorMessage } from '../../utils/formatters';
 
 interface UserFormData {
@@ -24,8 +24,6 @@ interface UserFormData {
   country: string;
   state: string;
   city: string;
-  profile_image: string;
-  profile_image_public_id: string;
   role_unique_id: string;
 }
 
@@ -47,7 +45,6 @@ const AddUser = () => {
   const {
     register,
     handleSubmit,
-    setValue,
     watch,
     formState: { errors },
   } = useForm<UserFormData>({
@@ -66,24 +63,9 @@ const AddUser = () => {
       country: '',
       state: '',
       city: '',
-      profile_image: '',
-      profile_image_public_id: '',
       role_unique_id: '',
     },
   });
-
-  const profileImage = watch('profile_image');
-  const profileImagePublicId = watch('profile_image_public_id');
-
-  const handleImageChange = (url: string, publicId: string) => {
-    setValue('profile_image', url);
-    setValue('profile_image_public_id', publicId);
-  };
-
-  const handleImageError = (errorMsg: string) => {
-    setError(errorMsg);
-    showAlert('error-alert');
-  };
 
   useEffect(() => {
     const fetchRoles = async () => {
@@ -110,12 +92,6 @@ const AddUser = () => {
       return;
     }
 
-    if (!data.profile_image) {
-      setError('Profile image is required');
-      showAlert('error-alert');
-      return;
-    }
-
     setLoading(true);
     setError('');
 
@@ -127,7 +103,6 @@ const AddUser = () => {
         password: data.password,
         confirmPassword: data.confirmPassword,
         gender: data.gender,
-        profile_image: data.profile_image,
         ...(data.middlename && { middlename: data.middlename }),
         ...(data.phone_number && { phone_number: data.phone_number }),
         ...(data.alt_phone_number && { alt_phone_number: data.alt_phone_number }),
@@ -390,21 +365,6 @@ const AddUser = () => {
                   ))}
                 </select>
               </div>
-
-              <ImageUpload
-                value={profileImage}
-                publicId={profileImagePublicId}
-                onChange={handleImageChange}
-                onError={handleImageError}
-                label="Profile Image"
-                required
-                folder="jafanerp/users"
-              />
-              {!profileImage && errors.profile_image && (
-                <span className="xui-font-sz-80 xui-mt-half" style={{ color: 'var(--error)' }}>
-                  Profile image is required
-                </span>
-              )}
 
               <div className="xui-form-box">
                 <label htmlFor="address">Address</label>

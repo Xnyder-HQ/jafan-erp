@@ -105,6 +105,8 @@ export interface AddVendorPaymentPayload {
   payment_method: string;
   receipt_reference?: string;
   notes?: string;
+  receipt_image?: string;
+  receipt_image_public_id?: string;
   facilitated_by?: string;
 }
 
