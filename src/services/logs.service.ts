@@ -9,6 +9,19 @@ export interface Log {
   status: number;
   createdAt: string;
   updatedAt: string;
+  User?: {
+    unique_id: string;
+    firstname: string;
+    middlename: string | null;
+    lastname: string;
+    username: string;
+    email: string;
+    Role?: {
+      unique_id: string;
+      name: string;
+      stripped: string;
+    };
+  };
 }
 
 export interface LogsResponse {

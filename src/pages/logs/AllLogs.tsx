@@ -1,12 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Navbar } from '../../components/layout';
-import { Renew, TrashCan, Download, View } from '@carbon/icons-react';
+import { Renew, /* TrashCan, */ Download, View } from '@carbon/icons-react';
 import { formatDate, extractErrorMessage } from '../../utils/formatters';
 import { useGeneral } from '../../context/GeneralContext';
 import logsService from '../../services/logs.service';
 import type { Log } from '../../services/logs.service';
 import { Alert, showAlert, Pagination, EmptyState, ErrorState, DateRangeFilter, SearchInput } from '../../components/common';
-import { ConfirmModal, ExportModal } from '../../components/modals';
+import { /* ConfirmModal, */ ExportModal } from '../../components/modals';
 import { modalShow } from '@richaadgigi/stylexui';
 
 interface DateRange {
@@ -15,27 +15,27 @@ interface DateRange {
 }
 
 const AllLogs = () => {
-  const { getAccessIds, checkAccess } = useGeneral();
+  const { getAccessIds /* , checkAccess */ } = useGeneral();
   const [dateFilter, setDateFilter] = useState<DateRange | null>(null);
   const [typeFilter, setTypeFilter] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [logs, setLogs] = useState<Log[]>([]);
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState('');
-  const [actionError, setActionError] = useState('');
+  // const [actionError, setActionError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [pageSize, setPageSize] = useState(50);
-  const [selectedLog, setSelectedLog] = useState<Log | null>(null);
+  // const [selectedLog, setSelectedLog] = useState<Log | null>(null);
   const [viewingLog, setViewingLog] = useState<Log | null>(null);
 
   const accessIds = getAccessIds('logs', 'all-logs');
   const moduleId = accessIds?.module_unique_id;
   const subModuleId = accessIds?.sub_module_unique_id;
 
-  const accessResult = moduleId ? checkAccess(moduleId, subModuleId) : { hasAccess: false, accessTypes: [] };
-  const canDelete = accessResult.accessTypes.includes('delete');
+  // const accessResult = moduleId ? checkAccess(moduleId, subModuleId) : { hasAccess: false, accessTypes: [] };
+  // const canDelete = accessResult.accessTypes.includes('delete');
 
   // Collect unique types from fetched logs for the filter dropdown
   const uniqueTypes = Array.from(new Set(logs.map(l => l.type).filter(Boolean))).sort();
@@ -142,20 +142,21 @@ const AllLogs = () => {
     }
   }, [moduleId, subModuleId, currentPage, pageSize]);
 
-  const openDeleteModal = (log: Log) => {
-    setSelectedLog(log);
-    modalShow('delete-log-modal');
-  };
+  //
+  // const openDeleteModal = (log: Log) => {
+  //   setSelectedLog(log);
+  //   modalShow('delete-log-modal');
+  // };
 
-  const handleDeleteLog = async () => {
-    if (!moduleId || !subModuleId || !selectedLog) {
-      return { success: false, message: 'Unable to delete log' };
-    }
-    return logsService.deleteLog(selectedLog.unique_id, {
-      module_unique_id: moduleId,
-      sub_module_unique_id: subModuleId,
-    });
-  };
+  // const handleDeleteLog = async () => {
+  //   if (!moduleId || !subModuleId || !selectedLog) {
+  //     return { success: false, message: 'Unable to delete log' };
+  //   }
+  //   return logsService.deleteLog(selectedLog.unique_id, {
+  //     module_unique_id: moduleId,
+  //     sub_module_unique_id: subModuleId,
+  //   });
+  // };
 
   const handlePageSizeChange = (newSize: number) => {
     setPageSize(newSize);
@@ -319,6 +320,7 @@ const AllLogs = () => {
                   <tr>
                     <th>Type</th>
                     <th>Description</th>
+                    <th>Created By</th>
                     <th>Created</th>
                     <th>Actions</th>
                   </tr>
@@ -336,6 +338,18 @@ const AllLogs = () => {
                           {log.description || '—'}
                         </span>
                       </td>
+                      <td className="xui-font-sz-85">
+                        {log.User ? (
+                          <div>
+                            <span className="xui-font-w-500">{log.User.firstname} {log.User.lastname}</span>
+                            {log.User.Role && (
+                              <span className="xui-d-block xui-font-sz-80 xui-opacity-6">{log.User.Role.name}</span>
+                            )}
+                          </div>
+                        ) : (
+                          <span className="xui-opacity-5">System</span>
+                        )}
+                      </td>
                       <td className="xui-opacity-7 xui-font-sz-80">
                         {formatDate(log.createdAt)}
                       </td>
@@ -349,6 +363,7 @@ const AllLogs = () => {
                           >
                             <View size={16} />
                           </button>
+                          {/*
                           {canDelete && (
                             <button
                               onClick={() => openDeleteModal(log)}
@@ -359,6 +374,7 @@ const AllLogs = () => {
                               <TrashCan size={16} />
                             </button>
                           )}
+                          */}
                         </div>
                       </td>
                     </tr>
@@ -378,9 +394,10 @@ const AllLogs = () => {
         </div>
       </div>
 
-      <Alert id="error-alert" type="error" title="Error" message={actionError} />
+      {/* <Alert id="error-alert" type="error" title="Error" message={actionError} /> */}
       <Alert id="success-alert" type="success" title="Success" message={successMessage} />
 
+      {/*
       <ConfirmModal
         id="delete-log-modal"
         title="Delete Log"
@@ -395,6 +412,7 @@ const AllLogs = () => {
         setSuccessMessage={setSuccessMessage}
         showAlert={showAlert}
       />
+      */}
 
       <ExportModal
         id="export-logs-modal"
@@ -403,6 +421,7 @@ const AllLogs = () => {
         columns={[
           { key: 'type', header: 'Type' },
           { key: 'description', header: 'Description' },
+          { key: 'User.firstname', header: 'Created By' },
           { key: 'createdAt', header: 'Created' },
         ]}
         data={logs}
@@ -426,6 +445,19 @@ const AllLogs = () => {
               <div>
                 <span className="xui-font-w-600 xui-font-sz-85 xui-d-block xui-mb-half" style={{ color: 'var(--neutral-500)' }}>Description</span>
                 <p className="xui-font-sz-85">{viewingLog.description || '—'}</p>
+              </div>
+              <div>
+                <span className="xui-font-w-600 xui-font-sz-85 xui-d-block xui-mb-half" style={{ color: 'var(--neutral-500)' }}>Created By</span>
+                <p className="xui-font-sz-85">
+                  {viewingLog.User ? (
+                    <>
+                      {viewingLog.User.firstname} {viewingLog.User.lastname}
+                      {viewingLog.User.Role && <span className="xui-opacity-6"> ({viewingLog.User.Role.name})</span>}
+                    </>
+                  ) : (
+                    <span className="xui-opacity-5">System</span>
+                  )}
+                </p>
               </div>
               <div>
                 <span className="xui-font-w-600 xui-font-sz-85 xui-d-block xui-mb-half" style={{ color: 'var(--neutral-500)' }}>Created</span>
