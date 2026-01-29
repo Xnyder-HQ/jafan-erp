@@ -200,11 +200,12 @@ const AddInvoice = () => {
                 {errors.sales_order_unique_id && (
                   <span className="xui-font-sz-80 xui-text-red">{errors.sales_order_unique_id.message}</span>
                 )}
-                {salesOrders.length === 0 && (
-                  <span className="xui-font-sz-80 xui-opacity-6 xui-d-block xui-mt-half">
-                    No approved sales orders available for invoicing.
-                  </span>
-                )}
+                <span className="xui-font-sz-80 xui-opacity-6 xui-d-block xui-mt-half">
+                  {salesOrders.length === 0
+                    ? "No approved sales orders available. Orders must be approved before they can be invoiced."
+                    : "Only approved sales orders appear in this list."
+                  }
+                </span>
               </div>
 
               <div className="xui-form-box">
