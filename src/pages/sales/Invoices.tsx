@@ -355,44 +355,48 @@ const Invoices = () => {
                         {formatDate(invoice.due_date)}
                       </td>
                       <td>
-                        <div className="xui-d-flex xui-flex-ai-center xui-grid-gap-half">
-                          {invoice.invoice_status?.toLowerCase() !== 'cancelled' && invoice.invoice_status?.toLowerCase() !== 'paid' && (
-                            <>
-                              <button
-                                onClick={() => navigate(`/dashboard/sales/invoices/${invoice.unique_id}/payment/add`)}
-                                className="xui-d-flex xui-flex-ai-center xui-flex-jc-center xui-w-32 xui-h-32 xui-bdr-rad-half xui-cursor-pointer"
-                                style={{ backgroundColor: 'var(--success-light)', border: 'none', color: 'var(--success)' }}
-                                title="Add Payment"
-                              >
-                                <Money size={16} />
-                              </button>
-                              <button
-                                onClick={() => openCancelModal(invoice)}
-                                className="xui-d-flex xui-flex-ai-center xui-flex-jc-center xui-w-32 xui-h-32 xui-bdr-rad-half xui-cursor-pointer"
-                                style={{ backgroundColor: 'var(--warning-light)', border: 'none', color: 'var(--warning)' }}
-                                title="Cancel Invoice"
-                              >
-                                <Close size={16} />
-                              </button>
-                            </>
-                          )}
-                          <button
-                            onClick={() => navigate(`/dashboard/sales/invoices/edit/${invoice.unique_id}`)}
-                            className="xui-d-flex xui-flex-ai-center xui-flex-jc-center xui-w-32 xui-h-32 xui-bdr-rad-half xui-cursor-pointer"
-                            style={{ backgroundColor: 'var(--info-light)', border: 'none', color: 'var(--info)' }}
-                            title="View/Edit Invoice"
-                          >
-                            <Edit size={16} />
-                          </button>
-                          <button
-                            onClick={() => openDeleteModal(invoice)}
-                            className="xui-d-flex xui-flex-ai-center xui-flex-jc-center xui-w-32 xui-h-32 xui-bdr-rad-half xui-cursor-pointer"
-                            style={{ backgroundColor: 'var(--error-light)', border: 'none', color: 'var(--error)' }}
-                            title="Delete Invoice"
-                          >
-                            <TrashCan size={16} />
-                          </button>
-                        </div>
+                        {invoice.invoice_status?.toLowerCase() === 'paid' ? (
+                          <span className="xui-font-sz-80 xui-opacity-5">—</span>
+                        ) : (
+                          <div className="xui-d-flex xui-flex-ai-center xui-grid-gap-half">
+                            {invoice.invoice_status?.toLowerCase() !== 'cancelled' && (
+                              <>
+                                <button
+                                  onClick={() => navigate(`/dashboard/sales/invoices/${invoice.unique_id}/payment/add`)}
+                                  className="xui-d-flex xui-flex-ai-center xui-flex-jc-center xui-w-32 xui-h-32 xui-bdr-rad-half xui-cursor-pointer"
+                                  style={{ backgroundColor: 'var(--success-light)', border: 'none', color: 'var(--success)' }}
+                                  title="Add Payment"
+                                >
+                                  <Money size={16} />
+                                </button>
+                                <button
+                                  onClick={() => openCancelModal(invoice)}
+                                  className="xui-d-flex xui-flex-ai-center xui-flex-jc-center xui-w-32 xui-h-32 xui-bdr-rad-half xui-cursor-pointer"
+                                  style={{ backgroundColor: 'var(--warning-light)', border: 'none', color: 'var(--warning)' }}
+                                  title="Cancel Invoice"
+                                >
+                                  <Close size={16} />
+                                </button>
+                              </>
+                            )}
+                            <button
+                              onClick={() => navigate(`/dashboard/sales/invoices/edit/${invoice.unique_id}`)}
+                              className="xui-d-flex xui-flex-ai-center xui-flex-jc-center xui-w-32 xui-h-32 xui-bdr-rad-half xui-cursor-pointer"
+                              style={{ backgroundColor: 'var(--info-light)', border: 'none', color: 'var(--info)' }}
+                              title="View/Edit Invoice"
+                            >
+                              <Edit size={16} />
+                            </button>
+                            <button
+                              onClick={() => openDeleteModal(invoice)}
+                              className="xui-d-flex xui-flex-ai-center xui-flex-jc-center xui-w-32 xui-h-32 xui-bdr-rad-half xui-cursor-pointer"
+                              style={{ backgroundColor: 'var(--error-light)', border: 'none', color: 'var(--error)' }}
+                              title="Delete Invoice"
+                            >
+                              <TrashCan size={16} />
+                            </button>
+                          </div>
+                        )}
                       </td>
                     </tr>
                   ))}
