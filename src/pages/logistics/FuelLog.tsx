@@ -26,7 +26,7 @@ const LogisticsFuelLogPage = () => {
   const [successMessage, setSuccessMessage] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(50);
 
   const accessIds = getAccessIds('logistics-supply-chain', 'logistics-fuel-logs');
   const moduleId = accessIds?.module_unique_id;

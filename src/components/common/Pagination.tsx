@@ -9,7 +9,7 @@ interface PaginationProps {
   onPageSizeChange?: (size: number) => void;
 }
 
-const PAGE_SIZE_OPTIONS = [10, 25, 50, 100];
+const PAGE_SIZE_OPTIONS = [50, 100, 250, 500];
 
 const Pagination: React.FC<PaginationProps> = ({
   currentPage,

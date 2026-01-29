@@ -26,7 +26,7 @@ const AllAcls = () => {
   const [successMessage, setSuccessMessage] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(50);
   const [selectedAcl, setSelectedAcl] = useState<Acl | null>(null);
 
   const accessIds = getAccessIds('acls', 'all-acls');

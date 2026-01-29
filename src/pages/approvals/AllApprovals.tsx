@@ -27,7 +27,7 @@ const AllApprovals = () => {
   const [successMessage, setSuccessMessage] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(50);
   const [selectedApproval, setSelectedApproval] = useState<Approval | null>(null);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
 

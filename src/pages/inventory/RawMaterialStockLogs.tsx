@@ -23,7 +23,7 @@ const RawMaterialStockLogs = () => {
   const [fetchError, setFetchError] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(50);
   const [successMessage, setSuccessMessage] = useState('');
 
   const accessIds = getAccessIds('inventory-stock-management', 'raw-material-stock-logs');

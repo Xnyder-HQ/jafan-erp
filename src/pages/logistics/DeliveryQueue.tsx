@@ -27,7 +27,7 @@ const DeliveryQueue = () => {
   const [successMessage, setSuccessMessage] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(50);
   const [selectedAssignment, setSelectedAssignment] = useState<DeliveryAssignment | null>(null);
 
   const accessIds = getAccessIds('logistics-supply-chain', 'delivery-assignments');

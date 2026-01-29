@@ -27,7 +27,7 @@ const FuelPurchases = () => {
   const [successMessage, setSuccessMessage] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(50);
   const [selectedPurchase, setSelectedPurchase] = useState<FuelPurchase | null>(null);
 
   const accessIds = getAccessIds('procurement-vendor-management', 'fuel-purchases');

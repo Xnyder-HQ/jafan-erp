@@ -26,7 +26,7 @@ const AllLogs = () => {
   const [successMessage, setSuccessMessage] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(50);
   const [selectedLog, setSelectedLog] = useState<Log | null>(null);
   const [viewingLog, setViewingLog] = useState<Log | null>(null);
 
