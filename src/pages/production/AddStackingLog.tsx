@@ -12,7 +12,7 @@ import { extractErrorMessage } from '../../utils/formatters';
 interface StackingLogFormData {
   finished_good_unique_id: string;
   blocks_stacked: string;
-  stacking_rate: string;
+  // stacking_rate: string; //
   breakage_quantity: string;
   stack_date: string;
   notes: string;
@@ -43,7 +43,7 @@ const AddStackingLog = () => {
     defaultValues: {
       finished_good_unique_id: '',
       blocks_stacked: '',
-      stacking_rate: '',
+      // stacking_rate: '', // Calculated automatically from business rules
       breakage_quantity: '0',
       stack_date: new Date().toISOString().split('T')[0],
       notes: '',
@@ -93,7 +93,7 @@ const AddStackingLog = () => {
         {
           finished_good_unique_id: data.finished_good_unique_id,
           blocks_stacked: Number(data.blocks_stacked),
-          stacking_rate: Number(data.stacking_rate),
+          // stacking_rate: Number(data.stacking_rate), // Calculated automatically from business rules
           breakage_quantity: Number(data.breakage_quantity),
           stack_date: data.stack_date,
           notes: data.notes || undefined,
@@ -182,6 +182,7 @@ const AddStackingLog = () => {
                   )}
                 </div>
 
+                {/*
                 <div className="xui-form-box">
                   <label htmlFor="stacking_rate">Stacking Rate (₦/block) *</label>
                   <input
@@ -201,6 +202,7 @@ const AddStackingLog = () => {
                     </span>
                   )}
                 </div>
+                */}
               </div>
 
               <div>

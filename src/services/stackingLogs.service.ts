@@ -57,7 +57,7 @@ export interface StackingLogResponse {
 export interface AddStackingLogPayload {
   finished_good_unique_id: string;
   blocks_stacked: number;
-  stacking_rate: number;
+  stacking_rate?: number; // Calculated automatically from business rules
   breakage_quantity: number;
   stack_date: string;
   notes?: string;
