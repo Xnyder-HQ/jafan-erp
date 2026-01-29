@@ -318,7 +318,7 @@ const Invoices = () => {
                     <th>Balance</th>
                     <th>Status</th>
                     <th>Due Date</th>
-                    <th>Actions</th>
+                    <th className='xui-min-w-200'>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
