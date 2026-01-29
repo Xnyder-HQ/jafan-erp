@@ -271,12 +271,12 @@ const Customers = () => {
                   <tr>
                     <th>Reference</th>
                     <th>Name</th>
-                    <th>Contact</th>
+                    <th className='xui-min-w-250'>Contact</th>
                     <th>Type</th>
                     <th>Balance</th>
                     <th>Joined</th>
                     <th>Status</th>
-                    <th>Actions</th>
+                    <th className='xui-min-w-150'>Actions</th>
                   </tr>
                 </thead>
                 <tbody>

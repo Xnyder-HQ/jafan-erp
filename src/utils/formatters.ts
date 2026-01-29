@@ -31,7 +31,7 @@ export const formatCompactCurrency = (amount: number, currency: string = '₦'):
   return `${currency}${formatCompactNumber(amount)}`;
 };
 
-export const formatDate = (date: string | Date, format: string = 'MMM D, YYYY'): string => {
+export const formatDate = (date: string | Date, format: string = 'MMM D, YYYY h:mm A'): string => {
   return moment(date).format(format);
 };
 
