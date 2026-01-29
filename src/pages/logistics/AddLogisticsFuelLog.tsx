@@ -32,7 +32,7 @@ const AddLogisticsFuelLog = () => {
   const moduleId = accessIds?.module_unique_id;
   const subModuleId = accessIds?.sub_module_unique_id;
 
-  const vehicleAccessIds = getAccessIds('logistics-supply-chain', 'fleet-management');
+  const vehicleAccessIds = getAccessIds('administration', 'vehicles');
   const vehicleModuleId = vehicleAccessIds?.module_unique_id;
   const vehicleSubModuleId = vehicleAccessIds?.sub_module_unique_id;
 
@@ -95,7 +95,7 @@ const AddLogisticsFuelLog = () => {
 
     const selectedVehicle = vehicles.find(v => v.unique_id === selectedVehicleId);
     if (selectedVehicle?.fuel_type) {
-      setValue('fuel_type', selectedVehicle.fuel_type);
+      setValue('fuel_type', selectedVehicle.fuel_type.toLowerCase());
     }
   }, [selectedVehicleId, vehicles, setValue]);
 
