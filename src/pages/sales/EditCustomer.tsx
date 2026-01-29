@@ -55,7 +55,9 @@ const EditCustomer = () => {
 
       if (response.success && response.data) {
         const orders = Array.isArray(response.data) ? response.data : response.data.rows || [];
-        setRelatedOrders(orders);
+        // Filter orders to only show those belonging to this customer (in case backend doesn't filter)
+        const filteredOrders = orders.filter(order => order.customer_unique_id === customerUniqueId);
+        setRelatedOrders(filteredOrders);
       }
     } catch (err) {
       console.error('Failed to fetch related orders:', err);
@@ -111,9 +113,6 @@ const EditCustomer = () => {
             other_address: customer.other_address || '',
             balance: customer.balance.toString(),
           });
-          if (customer.unique_id) {
-            fetchRelatedOrders(customer.unique_id);
-          }
         } else {
           setError('Customer not found');
           showAlert('error-alert');
@@ -127,7 +126,14 @@ const EditCustomer = () => {
     };
 
     fetchCustomer();
-  }, [moduleId, subModuleId, id, reset, fetchRelatedOrders]);
+  }, [moduleId, subModuleId, id, reset]);
+
+  // Fetch related orders when customer is loaded
+  useEffect(() => {
+    if (originalCustomer?.unique_id) {
+      fetchRelatedOrders(originalCustomer.unique_id);
+    }
+  }, [originalCustomer?.unique_id, fetchRelatedOrders]);
 
   const onSubmit = async (data: CustomerFormData) => {
     if (!accessIds || !id || !originalCustomer) {
