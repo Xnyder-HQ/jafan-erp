@@ -2,11 +2,12 @@ import { useState, useEffect, useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router';
 import { Navbar } from '../../components/layout';
-import { ArrowLeft } from '@carbon/icons-react';
+import { ArrowLeft, Add } from '@carbon/icons-react';
 import { useGeneral } from '../../context/GeneralContext';
 import { formatCurrency, formatDate, extractErrorMessage } from '../../utils/formatters';
 import invoicesService, { type Invoice } from '../../services/invoices.service';
-import { Alert, showAlert, ErrorState } from '../../components/common';
+import invoicePaymentsService, { type InvoicePayment } from '../../services/invoicePayments.service';
+import { Alert, showAlert, ErrorState, EmptyState } from '../../components/common';
 
 interface EditInvoiceForm {
   due_date: string;
@@ -20,9 +21,11 @@ const EditInvoice = () => {
   const { getAccessIds } = useGeneral();
   const [loading, setLoading] = useState(false);
   const [loadingInvoice, setLoadingInvoice] = useState(true);
+  const [loadingPayments, setLoadingPayments] = useState(false);
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [invoice, setInvoice] = useState<Invoice | null>(null);
+  const [payments, setPayments] = useState<InvoicePayment[]>([]);
 
   const accessIds = getAccessIds('sales-customer-management', 'invoices');
   const moduleId = accessIds?.module_unique_id;
@@ -81,9 +84,32 @@ const EditInvoice = () => {
     }
   }, [moduleId, subModuleId, id, reset]);
 
+  const fetchPayments = useCallback(async () => {
+    if (!moduleId || !subModuleId || !id) return;
+
+    setLoadingPayments(true);
+    try {
+      const response = await invoicePaymentsService.getPaymentsByInvoice({
+        invoice_unique_id: id,
+        module_unique_id: moduleId,
+        sub_module_unique_id: subModuleId,
+      });
+
+      if (response.success && response.data) {
+        const rows = Array.isArray(response.data) ? response.data : response.data.rows;
+        setPayments(rows || []);
+      }
+    } catch (err) {
+      console.error('Failed to fetch payments:', err);
+    } finally {
+      setLoadingPayments(false);
+    }
+  }, [moduleId, subModuleId, id]);
+
   useEffect(() => {
     fetchInvoice();
-  }, [fetchInvoice]);
+    fetchPayments();
+  }, [fetchInvoice, fetchPayments]);
 
   const onSubmit = async (data: EditInvoiceForm) => {
     if (!moduleId || !subModuleId || !invoice) {
@@ -337,6 +363,80 @@ const EditInvoice = () => {
                 {loading ? 'Updating Invoice...' : 'Update Invoice'}
               </button>
             </form>
+
+            {/* Invoice Payments Section */}
+            <div className="xui-mt-2">
+              <div className="xui-d-flex xui-flex-ai-center xui-flex-jc-space-between xui-mb-1">
+                <h3 className="xui-font-sz-90 xui-font-w-bold">Payment History</h3>
+                {invoice.invoice_status?.toLowerCase() !== 'paid' && invoice.invoice_status?.toLowerCase() !== 'cancelled' && (
+                  <button
+                    onClick={() => navigate(`/dashboard/sales/invoices/${invoice.unique_id}/payment/add`)}
+                    className="xui-btn xui-btn-sm xui-font-sz-80 xui-bdr-rad-half xui-font-w-500 xui-d-flex xui-flex-ai-center xui-grid-gap-half"
+                    style={{ backgroundColor: 'var(--primary-600)', color: 'var(--secondary-700)' }}
+                  >
+                    <Add size={16} />
+                    Add Payment
+                  </button>
+                )}
+              </div>
+
+              <div
+                className="xui-bg-white xui-bdr-rad-half xui-overflow-hidden"
+                style={{ border: '1px solid var(--neutral-200)' }}
+              >
+                {loadingPayments ? (
+                  <div className="xui-py-2 xui-text-center">
+                    <p className="xui-opacity-6">Loading payments...</p>
+                  </div>
+                ) : payments.length === 0 ? (
+                  <EmptyState
+                    title="No payments recorded"
+                    message="No payments have been recorded for this invoice yet."
+                  />
+                ) : (
+                  <div className="xui-table-responsive">
+                    <table className="xui-table" xui-style="2">
+                      <thead>
+                        <tr>
+                          <th>Date</th>
+                          <th>Method</th>
+                          <th>Amount</th>
+                          <th>Reference</th>
+                          <th>Received By</th>
+                          <th>Notes</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {payments.map((payment) => (
+                          <tr key={payment.unique_id}>
+                            <td className="xui-font-sz-85">
+                              {formatDate(payment.payment_date)}
+                            </td>
+                            <td>
+                              <span className="xui-badge xui-badge-info xui-font-sz-75">
+                                {payment.payment_method?.replace('_', ' ').toUpperCase()}
+                              </span>
+                            </td>
+                            <td className="xui-font-w-500" style={{ color: 'var(--success)' }}>
+                              {formatCurrency(payment.amount_paid)}
+                            </td>
+                            <td className="xui-font-sz-85 xui-opacity-7">
+                              {payment.receipt_reference || '-'}
+                            </td>
+                            <td className="xui-font-sz-85">
+                              {payment.User ? `${payment.User.firstname} ${payment.User.lastname}` : '-'}
+                            </td>
+                            <td className="xui-font-sz-80 xui-opacity-6" style={{ maxWidth: '200px' }}>
+                              {payment.notes || '-'}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+            </div>
           </>
         )}
       </div>

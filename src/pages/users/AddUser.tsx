@@ -2,11 +2,11 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { useForm } from 'react-hook-form';
 import { Navbar } from '../../components/layout';
-import { ArrowLeft } from '@carbon/icons-react';
+import { ArrowLeft, View, ViewOff } from '@carbon/icons-react';
 import { useGeneral } from '../../context/GeneralContext';
 import usersService from '../../services/users.service';
 import type { RoleOption } from '../../services/users.service';
-import { Alert, showAlert } from '../../components/common';
+import { Alert, showAlert, ImageUpload } from '../../components/common';
 import { extractErrorMessage } from '../../utils/formatters';
 
 interface UserFormData {
@@ -14,6 +14,8 @@ interface UserFormData {
   middlename: string;
   lastname: string;
   email: string;
+  password: string;
+  confirmPassword: string;
   phone_number: string;
   alt_phone_number: string;
   gender: string;
@@ -23,6 +25,7 @@ interface UserFormData {
   state: string;
   city: string;
   profile_image: string;
+  profile_image_public_id: string;
   role_unique_id: string;
 }
 
@@ -34,6 +37,8 @@ const AddUser = () => {
   const [successMessage, setSuccessMessage] = useState('');
   const [roles, setRoles] = useState<RoleOption[]>([]);
   const [loadingRoles, setLoadingRoles] = useState(true);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const accessIds = getAccessIds('administration', 'users');
   const moduleId = accessIds?.module_unique_id;
@@ -42,6 +47,8 @@ const AddUser = () => {
   const {
     register,
     handleSubmit,
+    setValue,
+    watch,
     formState: { errors },
   } = useForm<UserFormData>({
     defaultValues: {
@@ -49,6 +56,8 @@ const AddUser = () => {
       middlename: '',
       lastname: '',
       email: '',
+      password: '',
+      confirmPassword: '',
       phone_number: '',
       alt_phone_number: '',
       gender: '',
@@ -58,9 +67,23 @@ const AddUser = () => {
       state: '',
       city: '',
       profile_image: '',
+      profile_image_public_id: '',
       role_unique_id: '',
     },
   });
+
+  const profileImage = watch('profile_image');
+  const profileImagePublicId = watch('profile_image_public_id');
+
+  const handleImageChange = (url: string, publicId: string) => {
+    setValue('profile_image', url);
+    setValue('profile_image_public_id', publicId);
+  };
+
+  const handleImageError = (errorMsg: string) => {
+    setError(errorMsg);
+    showAlert('error-alert');
+  };
 
   useEffect(() => {
     const fetchRoles = async () => {
@@ -87,6 +110,12 @@ const AddUser = () => {
       return;
     }
 
+    if (!data.profile_image) {
+      setError('Profile image is required');
+      showAlert('error-alert');
+      return;
+    }
+
     setLoading(true);
     setError('');
 
@@ -95,6 +124,8 @@ const AddUser = () => {
         firstname: data.firstname,
         lastname: data.lastname,
         email: data.email,
+        password: data.password,
+        confirmPassword: data.confirmPassword,
         gender: data.gender,
         profile_image: data.profile_image,
         ...(data.middlename && { middlename: data.middlename }),
@@ -153,7 +184,7 @@ const AddUser = () => {
           <span className="icon-container"><ArrowLeft size={20} /></span>
         </a>
 
-        <p className="xui-font-sz-[16px] xui-opacity-4">Fill in the user details below. Fields marked with * are required. A password will be auto-generated for the user.</p>
+        <p className="xui-font-sz-[16px] xui-opacity-4">Fill in the user details below. Fields marked with * are required.</p>
         <hr className="xui-my-2" />
 
         <form onSubmit={handleSubmit(onSubmit)} className="xui-form">
@@ -223,6 +254,80 @@ const AddUser = () => {
               </div>
 
               <div className="xui-form-box">
+                <label htmlFor="password">Password *</label>
+                <div className="xui-pos-relative">
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    id="password"
+                    placeholder="Enter password"
+                    style={{ paddingRight: '40px' }}
+                    {...register('password', {
+                      required: 'Password is required',
+                      minLength: { value: 8, message: 'Password must be at least 8 characters' },
+                    })}
+                  />
+                  <button
+                    type="button"
+                    className="xui-pos-absolute xui-d-flex xui-flex-ai-center xui-flex-jc-center"
+                    style={{
+                      right: '8px',
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                      background: 'none',
+                      border: 'none',
+                      cursor: 'pointer',
+                      padding: '4px',
+                    }}
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? <ViewOff size={20} /> : <View size={20} />}
+                  </button>
+                </div>
+                {errors.password && (
+                  <span className="xui-font-sz-80 xui-mt-half" style={{ color: 'var(--error)' }}>
+                    {errors.password.message}
+                  </span>
+                )}
+              </div>
+
+              <div className="xui-form-box">
+                <label htmlFor="confirmPassword">Confirm Password *</label>
+                <div className="xui-pos-relative">
+                  <input
+                    type={showConfirmPassword ? 'text' : 'password'}
+                    id="confirmPassword"
+                    placeholder="Confirm password"
+                    style={{ paddingRight: '40px' }}
+                    {...register('confirmPassword', {
+                      required: 'Confirm password is required',
+                      validate: (value) => value === watch('password') || 'Passwords do not match',
+                    })}
+                  />
+                  <button
+                    type="button"
+                    className="xui-pos-absolute xui-d-flex xui-flex-ai-center xui-flex-jc-center"
+                    style={{
+                      right: '8px',
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                      background: 'none',
+                      border: 'none',
+                      cursor: 'pointer',
+                      padding: '4px',
+                    }}
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  >
+                    {showConfirmPassword ? <ViewOff size={20} /> : <View size={20} />}
+                  </button>
+                </div>
+                {errors.confirmPassword && (
+                  <span className="xui-font-sz-80 xui-mt-half" style={{ color: 'var(--error)' }}>
+                    {errors.confirmPassword.message}
+                  </span>
+                )}
+              </div>
+
+              <div className="xui-form-box">
                 <label htmlFor="phone_number">Phone Number</label>
                 <input
                   type="tel"
@@ -286,20 +391,20 @@ const AddUser = () => {
                 </select>
               </div>
 
-              <div className="xui-form-box">
-                <label htmlFor="profile_image">Profile Image URL *</label>
-                <input
-                  type="url"
-                  id="profile_image"
-                  placeholder="Enter profile image URL"
-                  {...register('profile_image', { required: 'Profile image URL is required' })}
-                />
-                {errors.profile_image && (
-                  <span className="xui-font-sz-80 xui-mt-half" style={{ color: 'var(--error)' }}>
-                    {errors.profile_image.message}
-                  </span>
-                )}
-              </div>
+              <ImageUpload
+                value={profileImage}
+                publicId={profileImagePublicId}
+                onChange={handleImageChange}
+                onError={handleImageError}
+                label="Profile Image"
+                required
+                folder="jafanerp/users"
+              />
+              {!profileImage && errors.profile_image && (
+                <span className="xui-font-sz-80 xui-mt-half" style={{ color: 'var(--error)' }}>
+                  Profile image is required
+                </span>
+              )}
 
               <div className="xui-form-box">
                 <label htmlFor="address">Address</label>

@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router';
 import { Navbar } from '../../components/layout';
-import { Add, Download, Edit, TrashCan, Renew, Close } from '@carbon/icons-react';
+import { Add, Download, Edit, TrashCan, Renew, Close, Money } from '@carbon/icons-react';
 import { formatCurrency, formatDate, extractErrorMessage } from '../../utils/formatters';
 import { useGeneral } from '../../context/GeneralContext';
 import invoicesService from '../../services/invoices.service';
@@ -357,14 +357,24 @@ const Invoices = () => {
                       <td>
                         <div className="xui-d-flex xui-flex-ai-center xui-grid-gap-half">
                           {invoice.invoice_status?.toLowerCase() !== 'cancelled' && invoice.invoice_status?.toLowerCase() !== 'paid' && (
-                            <button
-                              onClick={() => openCancelModal(invoice)}
-                              className="xui-d-flex xui-flex-ai-center xui-flex-jc-center xui-w-32 xui-h-32 xui-bdr-rad-half xui-cursor-pointer"
-                              style={{ backgroundColor: 'var(--warning-light)', border: 'none', color: 'var(--warning)' }}
-                              title="Cancel Invoice"
-                            >
-                              <Close size={16} />
-                            </button>
+                            <>
+                              <button
+                                onClick={() => navigate(`/dashboard/sales/invoices/${invoice.unique_id}/payment/add`)}
+                                className="xui-d-flex xui-flex-ai-center xui-flex-jc-center xui-w-32 xui-h-32 xui-bdr-rad-half xui-cursor-pointer"
+                                style={{ backgroundColor: 'var(--success-light)', border: 'none', color: 'var(--success)' }}
+                                title="Add Payment"
+                              >
+                                <Money size={16} />
+                              </button>
+                              <button
+                                onClick={() => openCancelModal(invoice)}
+                                className="xui-d-flex xui-flex-ai-center xui-flex-jc-center xui-w-32 xui-h-32 xui-bdr-rad-half xui-cursor-pointer"
+                                style={{ backgroundColor: 'var(--warning-light)', border: 'none', color: 'var(--warning)' }}
+                                title="Cancel Invoice"
+                              >
+                                <Close size={16} />
+                              </button>
+                            </>
                           )}
                           <button
                             onClick={() => navigate(`/dashboard/sales/invoices/edit/${invoice.unique_id}`)}

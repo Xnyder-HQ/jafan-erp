@@ -10,6 +10,7 @@ export { default as EditSalesOrder } from './EditSalesOrder';
 export { default as Invoices } from './Invoices';
 export { default as AddInvoice } from './AddInvoice';
 export { default as EditInvoice } from './EditInvoice';
+export { default as AddInvoicePayment } from './AddInvoicePayment';
 export { default as BlockCreditors } from './BlockCreditors';
 export { default as Discounts } from './Discounts';
 export { default as AddDiscount } from './AddDiscount';

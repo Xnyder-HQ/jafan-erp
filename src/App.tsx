@@ -9,7 +9,7 @@ import {
   Customers, AddCustomer, EditCustomer,
   Products, AddProduct, EditProduct,
   SalesOrders, AddSalesOrder, EditSalesOrder,
-  Invoices, AddInvoice, EditInvoice,
+  Invoices, AddInvoice, EditInvoice, AddInvoicePayment,
   BlockCreditors,
   Discounts, AddDiscount, EditDiscount,
   SalesOverview
@@ -108,6 +108,7 @@ function App() {
           <Route path="invoices" element={<Invoices />} />
           <Route path="invoices/add" element={<AddInvoice />} />
           <Route path="invoices/edit/:id" element={<EditInvoice />} />
+          <Route path="invoices/:invoiceId/payment/add" element={<AddInvoicePayment />} />
           <Route path="discounts" element={<Discounts />} />
           <Route path="discounts/add" element={<AddDiscount />} />
           <Route path="discounts/edit/:id" element={<EditDiscount />} />
