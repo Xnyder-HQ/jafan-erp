@@ -267,7 +267,7 @@ const Products = () => {
                   <tr>
                     <th>Reference</th>
                     <th>Name</th>
-                    <th>Category</th>
+                    <th>Type</th>
                     <th>Quantity</th>
                     <th>Unit Price</th>
                     <th>Status</th>
@@ -282,7 +282,7 @@ const Products = () => {
                       </td>
                       <td>{product.name}</td>
                       <td>
-                        <span className="xui-badge xui-badge-blue">{product.Category?.name || 'N/A'}</span>
+                        <span className="xui-badge xui-badge-blue">{product.type || 'N/A'}</span>
                       </td>
                       <td>{product.quantity}</td>
                       <td className="xui-font-w-500">{formatCurrency(product.price)}</td>
@@ -348,7 +348,7 @@ const Products = () => {
         columns={[
           { key: 'reference', header: 'Reference' },
           { key: 'name', header: 'Name' },
-          { key: 'Category.name', header: 'Category' },
+          { key: 'type', header: 'Type' },
           { key: 'quantity', header: 'Quantity' },
           { key: 'price', header: 'Unit Price' },
           { key: 'status', header: 'Status' },

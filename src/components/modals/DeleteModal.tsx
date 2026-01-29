@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Close } from '@carbon/icons-react';
 import { modalHide } from '@richaadgigi/stylexui';
+import { extractErrorMessage } from '../../utils/formatters';
 
 interface DeleteModalProps {
   id: string;
@@ -57,7 +58,7 @@ const DeleteModal = ({
       }
     } catch (err: any) {
       if (setError) {
-        setError(err.response?.data?.message || 'Failed to delete');
+        setError(extractErrorMessage(err, 'Failed to delete'));
       }
       if (showAlert) {
         showAlert('error-alert');

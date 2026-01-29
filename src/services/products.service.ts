@@ -55,7 +55,7 @@ export interface ProductResponse {
 }
 
 export interface AddProductPayload {
-  category_unique_id: string;
+  category_unique_id?: string; // Made optional - backend doesn't require it
   name: string;
   type?: string;
   description?: string;

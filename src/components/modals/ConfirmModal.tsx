@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Close } from '@carbon/icons-react';
 import { modalHide } from '@richaadgigi/stylexui';
+import { extractErrorMessage } from '../../utils/formatters';
 
 interface ConfirmModalProps {
   id: string;
@@ -63,7 +64,7 @@ const ConfirmModal = ({
       }
     } catch (err: any) {
       if (setError) {
-        setError(err.response?.data?.message || 'Action failed');
+        setError(extractErrorMessage(err, 'Action failed'));
       }
       if (showAlert) {
         showAlert('error-alert');

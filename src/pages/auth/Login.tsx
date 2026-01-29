@@ -6,6 +6,7 @@ import { APP_NAME, COMPANY_NAME } from '../../Globals';
 import { useGeneral } from '../../context/GeneralContext';
 import authService from '../../services/auth.service';
 import { Alert, showAlert } from '../../components/common';
+import { extractErrorMessage } from '../../utils/formatters';
 
 interface LoginFormData {
   email: string;
@@ -55,8 +56,7 @@ const Login = () => {
         setIsLoading(false);
       }
     } catch (err: any) {
-      const message = err.response?.data?.message || 'An error occurred. Please try again.';
-      setErrorMessage(message);
+      setErrorMessage(extractErrorMessage(err, 'An error occurred. Please try again.'));
       showAlert('error-alert');
       setIsLoading(false);
     }

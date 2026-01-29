@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router';
+import { useNavigate, useSearchParams } from 'react-router';
 import { useForm } from 'react-hook-form';
 import { Navbar } from '../../components/layout';
 import { ArrowLeft } from '@carbon/icons-react';
@@ -18,6 +18,7 @@ interface DiscountFormData {
 
 const AddDiscount = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { getAccessIds } = useGeneral();
   const [loading, setLoading] = useState(false);
   const [salesOrders, setSalesOrders] = useState<SalesOrder[]>([]);
@@ -32,6 +33,7 @@ const AddDiscount = () => {
     register,
     handleSubmit,
     watch,
+    setValue,
     formState: { errors },
   } = useForm<DiscountFormData>({
     defaultValues: {
@@ -83,6 +85,16 @@ const AddDiscount = () => {
       setSelectedOrder(null);
     }
   }, [selectedOrderId, salesOrders]);
+
+  useEffect(() => {
+    const salesOrderId = searchParams.get('sales_order_unique_id');
+    if (salesOrderId && salesOrders.length > 0) {
+      const orderExists = salesOrders.some((o) => o.unique_id === salesOrderId);
+      if (orderExists) {
+        setValue('sales_order_unique_id', salesOrderId);
+      }
+    }
+  }, [searchParams, salesOrders, setValue]);
 
   const onSubmit = async (data: DiscountFormData) => {
     if (!accessIds) {

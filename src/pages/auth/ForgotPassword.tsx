@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { COMPANY_NAME } from '../../Globals';
 import authService from '../../services/auth.service';
 import { Alert, showAlert } from '../../components/common';
+import { extractErrorMessage } from '../../utils/formatters';
 
 interface ForgotPasswordFormData {
   login_id: string;
@@ -35,8 +36,7 @@ const ForgotPassword = () => {
         showAlert('error-alert');
       }
     } catch (err: any) {
-      const message = err.response?.data?.message || 'An error occurred. Please try again.';
-      setErrorMessage(message);
+      setErrorMessage(extractErrorMessage(err, 'An error occurred. Please try again.'));
       showAlert('error-alert');
     } finally {
       setIsLoading(false);

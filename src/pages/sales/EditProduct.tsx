@@ -6,13 +6,14 @@ import { ArrowLeft } from '@carbon/icons-react';
 import { useGeneral } from '../../context/GeneralContext';
 import productsService from '../../services/products.service';
 import type { Product } from '../../services/products.service';
-import categoriesService from '../../services/categories.service';
-import type { Category } from '../../services/categories.service';
+// import categoriesService from '../../services/categories.service';
+// import type { Category } from '../../services/categories.service';
 import { Alert, showAlert } from '../../components/common';
-import { AddCategoryModal } from '../../components/modals';
+import { extractErrorMessage } from '../../utils/formatters';
+// import { AddCategoryModal } from '../../components/modals';
 
 interface ProductFormData {
-  category_unique_id: string;
+  // category_unique_id: string;
   name: string;
   type: string;
   description: string;
@@ -31,8 +32,8 @@ const EditProduct = () => {
   const { getAccessIds } = useGeneral();
   const [loading, setLoading] = useState(false);
   const [loadingProduct, setLoadingProduct] = useState(true);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [loadingCategories, setLoadingCategories] = useState(true);
+  // const [categories, setCategories] = useState<Category[]>([]);
+  // const [loadingCategories, setLoadingCategories] = useState(true);
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [originalProduct, setOriginalProduct] = useState<Product | null>(null);
@@ -44,12 +45,12 @@ const EditProduct = () => {
   const {
     register,
     handleSubmit,
-    setValue,
+    // setValue,
     reset,
     formState: { errors },
   } = useForm<ProductFormData>({
     defaultValues: {
-      category_unique_id: '',
+      // category_unique_id: '',
       name: '',
       type: '',
       description: '',
@@ -65,33 +66,33 @@ const EditProduct = () => {
 
   useEffect(() => {
     if (!moduleId) {
-      setLoadingCategories(false);
+      // setLoadingCategories(false);
       setLoadingProduct(false);
       return;
     }
 
-    const fetchCategories = async () => {
-      try {
-        const response = await categoriesService.getCategories({
-          page: 1,
-          size: 100,
-          module_unique_id: moduleId,
-          sub_module_unique_id: subModuleId,
-        });
+    // const fetchCategories = async () => {
+    //   try {
+    //     const response = await categoriesService.getCategories({
+    //       page: 1,
+    //       size: 100,
+    //       module_unique_id: moduleId,
+    //       sub_module_unique_id: subModuleId,
+    //     });
 
-        if (response.success && response.data) {
-          if (Array.isArray(response.data)) {
-            setCategories(response.data);
-          } else {
-            setCategories(response.data.rows || []);
-          }
-        }
-      } catch (err: any) {
-        console.error('Failed to fetch categories:', err);
-      } finally {
-        setLoadingCategories(false);
-      }
-    };
+    //     if (response.success && response.data) {
+    //       if (Array.isArray(response.data)) {
+    //         setCategories(response.data);
+    //       } else {
+    //         setCategories(response.data.rows || []);
+    //       }
+    //     }
+    //   } catch (err: any) {
+    //     console.error('Failed to fetch categories:', err);
+    //   } finally {
+    //     setLoadingCategories(false);
+    //   }
+    // };
 
     const fetchProduct = async () => {
       if (!id) {
@@ -109,7 +110,7 @@ const EditProduct = () => {
           const product = response.data;
           setOriginalProduct(product);
           reset({
-            category_unique_id: product.category_unique_id,
+            // category_unique_id: product.category_unique_id,
             name: product.name,
             type: product.type || '',
             description: product.description || '',
@@ -126,43 +127,43 @@ const EditProduct = () => {
           showAlert('error-alert');
         }
       } catch (err: any) {
-        setError(err.response?.data?.message || 'Failed to fetch product');
+        setError(extractErrorMessage(err, 'Failed to fetch product'));
         showAlert('error-alert');
       } finally {
         setLoadingProduct(false);
       }
     };
 
-    fetchCategories();
+    // fetchCategories();
     fetchProduct();
   }, [moduleId, subModuleId, id, reset]);
 
-  const handleCategoryAdded = async (categoryId?: string) => {
-    if (!moduleId) return;
+  // const handleCategoryAdded = async (categoryId?: string) => {
+  //   if (!moduleId) return;
 
-    try {
-      const response = await categoriesService.getCategories({
-        page: 1,
-        size: 100,
-        module_unique_id: moduleId,
-        sub_module_unique_id: subModuleId,
-      });
+  //   try {
+  //     const response = await categoriesService.getCategories({
+  //       page: 1,
+  //       size: 100,
+  //       module_unique_id: moduleId,
+  //       sub_module_unique_id: subModuleId,
+  //     });
 
-      if (response.success && response.data) {
-        if (Array.isArray(response.data)) {
-          setCategories(response.data);
-        } else {
-          setCategories(response.data.rows || []);
-        }
-      }
-    } catch (err: any) {
-      console.error('Failed to fetch categories:', err);
-    }
+  //     if (response.success && response.data) {
+  //       if (Array.isArray(response.data)) {
+  //         setCategories(response.data);
+  //       } else {
+  //         setCategories(response.data.rows || []);
+  //       }
+  //     }
+  //   } catch (err: any) {
+  //     console.error('Failed to fetch categories:', err);
+  //   }
 
-    if (categoryId) {
-      setValue('category_unique_id', categoryId);
-    }
-  };
+  //   if (categoryId) {
+  //     setValue('category_unique_id', categoryId);
+  //   }
+  // };
 
   const onSubmit = async (data: ProductFormData) => {
     if (!accessIds || !id || !originalProduct) {
@@ -180,11 +181,12 @@ const EditProduct = () => {
 
       const updatePromises: Promise<{ success: boolean; message: string }>[] = [];
 
-      if (data.category_unique_id !== originalProduct.category_unique_id) {
-        updatePromises.push(
-          productsService.updateProductCategory(id, { category_unique_id: data.category_unique_id }, params)
-        );
-      }
+      // Category update commented out
+      // if (data.category_unique_id !== originalProduct.category_unique_id) {
+      //   updatePromises.push(
+      //     productsService.updateProductCategory(id, { category_unique_id: data.category_unique_id }, params)
+      //   );
+      // }
 
       if (
         data.name !== originalProduct.name ||
@@ -286,7 +288,7 @@ const EditProduct = () => {
         }, 1500);
       }
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to update product');
+      setError(extractErrorMessage(err, 'Failed to update product'));
       showAlert('error-alert');
     } finally {
       setLoading(false);
@@ -336,6 +338,7 @@ const EditProduct = () => {
                   </span>
                 )}
               </div>
+              {/* Category field commented out - backend doesn't require it
               <div className="xui-form-box">
                 <div className="xui-d-flex xui-flex-ai-center xui-flex-jc-space-between">
                   <label htmlFor="category_unique_id">Category *</label>
@@ -369,6 +372,7 @@ const EditProduct = () => {
                   </span>
                 )}
               </div>
+              */}
               <div className="xui-form-box">
                 <label htmlFor="type">Product Type</label>
                 <input
@@ -386,12 +390,13 @@ const EditProduct = () => {
                 )}
               </div>
               <div className="xui-form-box">
-                <label htmlFor="unit_of_measure">Unit of Measure</label>
+                <label htmlFor="unit_of_measure">Unit of Measure *</label>
                 <input
                   type="text"
                   id="unit_of_measure"
                   placeholder="e.g., Pieces, KG, Litres"
                   {...register('unit_of_measure', {
+                    required: 'Unit of measure is required',
                     maxLength: { value: 100, message: 'Unit must be less than 100 characters' },
                   })}
                 />
@@ -518,12 +523,14 @@ const EditProduct = () => {
       <Alert id="error-alert" type="error" title="Error" message={error} />
       <Alert id="success-alert" type="success" title="Success" message={successMessage} />
 
+      {/* AddCategoryModal commented out - category field disabled
       <AddCategoryModal
         accessIds={accessIds}
         onSuccess={handleCategoryAdded}
         setError={setError}
         setSuccessMessage={setSuccessMessage}
       />
+      */}
     </div>
   );
 };

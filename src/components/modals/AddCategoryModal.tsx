@@ -4,6 +4,7 @@ import { Close } from '@carbon/icons-react';
 import { modalHide } from '@richaadgigi/stylexui';
 import categoriesService from '../../services/categories.service';
 import { showAlert } from '../common';
+import { extractErrorMessage } from '../../utils/formatters';
 
 interface AddCategoryFormData {
   name: string;
@@ -55,7 +56,7 @@ const AddCategoryModal = ({ accessIds, onSuccess, setError, setSuccessMessage }:
         showAlert('error-alert');
       }
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to add category');
+      setError(extractErrorMessage(err, 'Failed to add category'));
       showAlert('error-alert');
     } finally {
       setAdding(false);

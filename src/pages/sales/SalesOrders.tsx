@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router';
 import { Navbar } from '../../components/layout';
-import { Add, Download, Edit, TrashCan, Renew, Checkmark, CheckmarkFilled } from '@carbon/icons-react';
+import { Add, Download, Edit, TrashCan, Renew, Checkmark, CheckmarkFilled, Receipt, TagGroup } from '@carbon/icons-react';
 import { formatCurrency, formatDate, extractErrorMessage } from '../../utils/formatters';
 import { useGeneral } from '../../context/GeneralContext';
 import salesOrdersService from '../../services/salesOrders.service';
@@ -403,6 +403,22 @@ const SalesOrders = () => {
                             title="View/Edit Order"
                           >
                             <Edit size={16} />
+                          </button>
+                          <button
+                            onClick={() => navigate(`/dashboard/sales/invoices/add?sales_order_unique_id=${order.unique_id}`)}
+                            className="xui-d-flex xui-flex-ai-center xui-flex-jc-center xui-w-32 xui-h-32 xui-bdr-rad-half xui-cursor-pointer"
+                            style={{ backgroundColor: 'var(--success-light)', border: 'none', color: 'var(--success)' }}
+                            title="Add Invoice"
+                          >
+                            <Receipt size={16} />
+                          </button>
+                          <button
+                            onClick={() => navigate(`/dashboard/sales/discounts/add?sales_order_unique_id=${order.unique_id}`)}
+                            className="xui-d-flex xui-flex-ai-center xui-flex-jc-center xui-w-32 xui-h-32 xui-bdr-rad-half xui-cursor-pointer"
+                            style={{ backgroundColor: 'var(--warning-light)', border: 'none', color: 'var(--warning)' }}
+                            title="Add Discount"
+                          >
+                            <TagGroup size={16} />
                           </button>
                           <button
                             onClick={() => openDeleteModal(order)}

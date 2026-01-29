@@ -1,17 +1,18 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { useForm } from 'react-hook-form';
 import { Navbar } from '../../components/layout';
 import { ArrowLeft } from '@carbon/icons-react';
 import { useGeneral } from '../../context/GeneralContext';
 import productsService from '../../services/products.service';
-import categoriesService from '../../services/categories.service';
-import type { Category } from '../../services/categories.service';
+// import categoriesService from '../../services/categories.service';
+// import type { Category } from '../../services/categories.service';
 import { Alert, showAlert } from '../../components/common';
-import { AddCategoryModal } from '../../components/modals';
+import { extractErrorMessage } from '../../utils/formatters';
+// import { AddCategoryModal } from '../../components/modals';
 
 interface ProductFormData {
-  category_unique_id: string;
+  // category_unique_id: string;
   name: string;
   type: string;
   description: string;
@@ -28,8 +29,8 @@ const AddProduct = () => {
   const navigate = useNavigate();
   const { getAccessIds } = useGeneral();
   const [loading, setLoading] = useState(false);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [loadingCategories, setLoadingCategories] = useState(true);
+  // const [categories, setCategories] = useState<Category[]>([]);
+  // const [loadingCategories, setLoadingCategories] = useState(true);
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
@@ -38,11 +39,11 @@ const AddProduct = () => {
   const {
     register,
     handleSubmit,
-    setValue,
+    // setValue,
     formState: { errors },
   } = useForm<ProductFormData>({
     defaultValues: {
-      category_unique_id: '',
+      // category_unique_id: '',
       name: '',
       type: '',
       description: '',
@@ -56,44 +57,44 @@ const AddProduct = () => {
     },
   });
 
-  const fetchCategories = useCallback(async () => {
-    if (!accessIds) {
-      setLoadingCategories(false);
-      return;
-    }
+  // const fetchCategories = useCallback(async () => {
+  //   if (!accessIds) {
+  //     setLoadingCategories(false);
+  //     return;
+  //   }
 
-    try {
-      const response = await categoriesService.getCategories({
-        page: 1,
-        size: 100,
-        module_unique_id: accessIds.module_unique_id,
-        sub_module_unique_id: accessIds.sub_module_unique_id,
-      });
+  //   try {
+  //     const response = await categoriesService.getCategories({
+  //       page: 1,
+  //       size: 100,
+  //       module_unique_id: accessIds.module_unique_id,
+  //       sub_module_unique_id: accessIds.sub_module_unique_id,
+  //     });
 
-      if (response.success && response.data) {
-        if (Array.isArray(response.data)) {
-          setCategories(response.data);
-        } else {
-          setCategories(response.data.rows || []);
-        }
-      }
-    } catch (err: any) {
-      console.error('Failed to fetch categories:', err);
-    } finally {
-      setLoadingCategories(false);
-    }
-  }, [accessIds]);
+  //     if (response.success && response.data) {
+  //       if (Array.isArray(response.data)) {
+  //         setCategories(response.data);
+  //       } else {
+  //         setCategories(response.data.rows || []);
+  //       }
+  //     }
+  //   } catch (err: any) {
+  //     console.error('Failed to fetch categories:', err);
+  //   } finally {
+  //     setLoadingCategories(false);
+  //   }
+  // }, [accessIds]);
 
-  useEffect(() => {
-    fetchCategories();
-  }, [fetchCategories]);
+  // useEffect(() => {
+  //   fetchCategories();
+  // }, [fetchCategories]);
 
-  const handleCategoryAdded = async (categoryId?: string) => {
-    await fetchCategories();
-    if (categoryId) {
-      setValue('category_unique_id', categoryId);
-    }
-  };
+  // const handleCategoryAdded = async (categoryId?: string) => {
+  //   await fetchCategories();
+  //   if (categoryId) {
+  //     setValue('category_unique_id', categoryId);
+  //   }
+  // };
 
   const onSubmit = async (data: ProductFormData) => {
     if (!accessIds) {
@@ -105,7 +106,7 @@ const AddProduct = () => {
     setLoading(true);
     try {
       const payload = {
-        category_unique_id: data.category_unique_id,
+        // category_unique_id: data.category_unique_id,
         name: data.name,
         type: data.type || undefined,
         description: data.description || undefined,
@@ -134,7 +135,7 @@ const AddProduct = () => {
         showAlert('error-alert');
       }
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to add product');
+      setError(extractErrorMessage(err, 'Failed to add product'));
       showAlert('error-alert');
     } finally {
       setLoading(false);
@@ -173,6 +174,7 @@ const AddProduct = () => {
                   </span>
                 )}
               </div>
+              {/* Category field commented out - backend doesn't require it
               <div className="xui-form-box">
                 <div className="xui-d-flex xui-flex-ai-center xui-flex-jc-space-between">
                   <label htmlFor="category_unique_id">Category *</label>
@@ -206,6 +208,7 @@ const AddProduct = () => {
                   </span>
                 )}
               </div>
+              */}
               <div className="xui-form-box">
                 <label htmlFor="type">Product Type</label>
                 <input
@@ -223,12 +226,13 @@ const AddProduct = () => {
                 )}
               </div>
               <div className="xui-form-box">
-                <label htmlFor="unit_of_measure">Unit of Measure</label>
+                <label htmlFor="unit_of_measure">Unit of Measure *</label>
                 <input
                   type="text"
                   id="unit_of_measure"
                   placeholder="e.g., Pieces, KG, Litres"
                   {...register('unit_of_measure', {
+                    required: 'Unit of measure is required',
                     maxLength: { value: 100, message: 'Unit must be less than 100 characters' },
                   })}
                 />
@@ -355,12 +359,14 @@ const AddProduct = () => {
       <Alert id="error-alert" type="error" title="Error" message={error} />
       <Alert id="success-alert" type="success" title="Success" message={successMessage} />
 
+      {/* AddCategoryModal commented out - category field disabled
       <AddCategoryModal
         accessIds={accessIds}
         onSuccess={handleCategoryAdded}
         setError={setError}
         setSuccessMessage={setSuccessMessage}
       />
+      */}
     </div>
   );
 };

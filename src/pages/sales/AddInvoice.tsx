@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router';
+import { useNavigate, useSearchParams } from 'react-router';
 import { Navbar } from '../../components/layout';
 import { ArrowLeft } from '@carbon/icons-react';
 import { useGeneral } from '../../context/GeneralContext';
@@ -19,6 +19,7 @@ interface InvoiceForm {
 
 const AddInvoice = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { getAccessIds } = useGeneral();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -39,6 +40,7 @@ const AddInvoice = () => {
     register,
     handleSubmit,
     watch,
+    setValue,
     formState: { errors },
   } = useForm<InvoiceForm>({
     defaultValues: {
@@ -90,6 +92,16 @@ const AddInvoice = () => {
   useEffect(() => {
     fetchSalesOrders();
   }, [fetchSalesOrders]);
+
+  useEffect(() => {
+    const salesOrderId = searchParams.get('sales_order_unique_id');
+    if (salesOrderId && salesOrders.length > 0) {
+      const orderExists = salesOrders.some((o) => o.unique_id === salesOrderId);
+      if (orderExists) {
+        setValue('sales_order_unique_id', salesOrderId);
+      }
+    }
+  }, [searchParams, salesOrders, setValue]);
 
   const onSubmit = async (data: InvoiceForm) => {
     if (!moduleId || !subModuleId) {
