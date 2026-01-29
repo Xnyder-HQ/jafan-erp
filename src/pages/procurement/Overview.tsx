@@ -104,7 +104,7 @@ const ProcurementOverview = () => {
               />
             </div>
 
-            <div className="xui-d-grid xui-grid-col-1 xui-md-grid-col-2 xui-lg-grid-col-3 xui-grid-gap-1 xui-mb-1-half">
+            <div className="xui-d-grid xui-grid-col-1 xui-md-grid-col-2 xui-grid-gap-1 xui-mb-1-half">
               <div className="xui-bg-white xui-bdr-rad-half xui-overflow-hidden" style={{ border: '1px solid var(--neutral-200)' }}>
                 <div className="xui-p-1" style={{ borderBottom: '1px solid var(--neutral-200)' }}>
                   <h3 className="xui-font-sz-90 xui-font-w-600" style={{ color: 'var(--neutral-900)' }}>Financial Summary</h3>
@@ -157,6 +157,9 @@ const ProcurementOverview = () => {
                   )}
                 </div>
               </div>
+            </div>
+
+            <div className="xui-mb-1-half">
               <div className="xui-bg-white xui-bdr-rad-half xui-overflow-hidden" style={{ border: '1px solid var(--neutral-200)' }}>
                 <div className="xui-p-1" style={{ borderBottom: '1px solid var(--neutral-200)' }}>
                   <h3 className="xui-font-sz-90 xui-font-w-600" style={{ color: 'var(--neutral-900)' }}>Expenses by Category</h3>
