@@ -138,6 +138,15 @@ export const usersService = {
     return response.data;
   },
 
+  updateUserRole: async (
+    data: { unique_id: string; role_unique_id: string },
+    params: ModuleParams
+  ): Promise<{ success: boolean; message: string }> => {
+    const query = buildQueryParams(params);
+    const response = await api.put(`/user/update/role?${query}`, data);
+    return response.data;
+  },
+
   deleteUser: async (
     unique_id: string,
     params: ModuleParams

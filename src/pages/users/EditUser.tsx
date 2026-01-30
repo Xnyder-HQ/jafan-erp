@@ -1,14 +1,19 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router';
+import { useForm } from 'react-hook-form';
 import { Navbar } from '../../components/layout';
-import { ArrowLeft, Renew, Checkmark, Subtract, CloseOutline } from '@carbon/icons-react';
+import { ArrowLeft, Renew, Checkmark, Subtract, CloseOutline, UserRole } from '@carbon/icons-react';
 import { useGeneral } from '../../context/GeneralContext';
 import usersService from '../../services/users.service';
-import type { User } from '../../services/users.service';
+import type { User, RoleOption } from '../../services/users.service';
 import { Alert, showAlert } from '../../components/common';
 import { extractErrorMessage } from '../../utils/formatters';
 import { ConfirmModal } from '../../components/modals';
 import { modalShow } from '@richaadgigi/stylexui';
+
+interface RoleFormData {
+  role_unique_id: string;
+}
 
 const EditUser = () => {
   const navigate = useNavigate();
@@ -20,6 +25,21 @@ const EditUser = () => {
   const [actionError, setActionError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [pendingAction, setPendingAction] = useState<'grant' | 'suspend' | 'revoke' | null>(null);
+  const [roles, setRoles] = useState<RoleOption[]>([]);
+  const [updatingRole, setUpdatingRole] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+  } = useForm<RoleFormData>({
+    defaultValues: {
+      role_unique_id: '',
+    },
+  });
+
+  const selectedRoleId = watch('role_unique_id');
 
   const accessIds = getAccessIds('administration', 'users');
   const moduleId = accessIds?.module_unique_id;
@@ -50,6 +70,64 @@ const EditUser = () => {
   useEffect(() => {
     fetchUser();
   }, [fetchUser]);
+
+  useEffect(() => {
+    const fetchRoles = async () => {
+      try {
+        const response = await usersService.getRoles();
+        if (response.success && response.data) {
+          const rolesData = Array.isArray(response.data) ? response.data : response.data.rows;
+          setRoles(rolesData || []);
+        }
+      } catch (err) {
+        console.error('Failed to fetch roles:', err);
+      }
+    };
+
+    fetchRoles();
+  }, []);
+
+  useEffect(() => {
+    if (user?.Role?.unique_id) {
+      setValue('role_unique_id', user.Role.unique_id);
+    }
+  }, [user, setValue]);
+
+  const onRoleSubmit = async (data: RoleFormData) => {
+    if (!moduleId || !subModuleId || !user || !data.role_unique_id) {
+      setActionError('Please select a role');
+      showAlert('error-alert');
+      return;
+    }
+
+    if (data.role_unique_id === user.Role?.unique_id) {
+      setActionError('User already has this role');
+      showAlert('error-alert');
+      return;
+    }
+
+    setUpdatingRole(true);
+    try {
+      const response = await usersService.updateUserRole(
+        { unique_id: user.unique_id, role_unique_id: data.role_unique_id },
+        { module_unique_id: moduleId, sub_module_unique_id: subModuleId }
+      );
+
+      if (response.success) {
+        setSuccessMessage('User role updated successfully');
+        showAlert('success-alert');
+        fetchUser();
+      } else {
+        setActionError(response.message || 'Failed to update role');
+        showAlert('error-alert');
+      }
+    } catch (err: any) {
+      setActionError(extractErrorMessage(err, 'Failed to update role'));
+      showAlert('error-alert');
+    } finally {
+      setUpdatingRole(false);
+    }
+  };
 
   const getActionConfig = () => {
     switch (pendingAction) {
@@ -224,13 +302,54 @@ const EditUser = () => {
                 <div className="xui-p-1">
                   <div className="xui-d-flex xui-flex-dir-column xui-grid-gap-1">
                     <div>
-                      <span className="xui-font-w-600 xui-font-sz-80 xui-d-block xui-mb-half" style={{ color: 'var(--neutral-500)' }}>Role</span>
+                      <span className="xui-font-w-600 xui-font-sz-80 xui-d-block xui-mb-half" style={{ color: 'var(--neutral-500)' }}>Current Role</span>
                       {user.Role ? (
                         <span className="xui-badge xui-badge-info xui-font-sz-70">{user.Role.name}</span>
                       ) : (
                         <span className="xui-font-sz-85 xui-opacity-5">No role assigned</span>
                       )}
                     </div>
+
+                    {canEdit && (
+                      <form className='xui-form' onSubmit={handleSubmit(onRoleSubmit)}>
+                        <span className="xui-font-w-600 xui-font-sz-80 xui-d-block xui-mb-half" style={{ color: 'var(--neutral-500)' }}>Change Role</span>
+                        <div className="xui-d-flex xui-flex-ai-center xui-grid-gap-half">
+                          <select
+                            {...register('role_unique_id')}
+                            className="xui-font-sz-85"
+                            style={{
+                              padding: '8px 12px',
+                              borderRadius: '6px',
+                              border: '1px solid var(--neutral-300)',
+                              backgroundColor: 'var(--white)',
+                              flex: 1,
+                              maxWidth: '200px',
+                            }}
+                          >
+                            <option value="">--Select role--</option>
+                            {roles.map((role) => (
+                              <option key={role.unique_id} value={role.unique_id}>
+                                {role.name}
+                              </option>
+                            ))}
+                          </select>
+                          <button
+                            type="submit"
+                            disabled={updatingRole || !selectedRoleId || selectedRoleId === user.Role?.unique_id}
+                            className="xui-btn xui-font-sz-80 xui-bdr-rad-half xui-font-w-500 xui-d-flex xui-flex-ai-center xui-grid-gap-half"
+                            style={{
+                              backgroundColor: 'var(--primary-600)',
+                              color: 'var(--white)',
+                              border: 'none',
+                              opacity: (!selectedRoleId || selectedRoleId === user.Role?.unique_id) ? 0.5 : 1,
+                            }}
+                          >
+                            <span className="icon-container"><UserRole size={16} /></span>
+                            {updatingRole ? 'Updating...' : 'Update Role'}
+                          </button>
+                        </div>
+                      </form>
+                    )}
                   </div>
 
                   {canEdit && (
