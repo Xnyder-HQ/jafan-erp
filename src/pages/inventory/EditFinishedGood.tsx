@@ -35,10 +35,6 @@ const EditFinishedGood = () => {
   const moduleId = accessIds?.module_unique_id;
   const subModuleId = accessIds?.sub_module_unique_id;
 
-  const productAccessIds = getAccessIds('sales-customer-management', 'products');
-  const productModuleId = productAccessIds?.module_unique_id;
-  const productSubModuleId = productAccessIds?.sub_module_unique_id;
-
   const {
     register,
     handleSubmit,
@@ -57,15 +53,8 @@ const EditFinishedGood = () => {
   });
 
   const fetchProducts = useCallback(async () => {
-    if (!productModuleId || !productSubModuleId) return;
-
     try {
-      const response = await productsService.getProducts({
-        page: 1,
-        size: 100,
-        module_unique_id: productModuleId,
-        sub_module_unique_id: productSubModuleId,
-      });
+      const response = await productsService.getProductsForDropdown();
 
       if (response.success && response.data && 'rows' in response.data) {
         setProducts(response.data.rows);
@@ -73,7 +62,7 @@ const EditFinishedGood = () => {
     } catch (err) {
       console.error('Failed to fetch products:', err);
     }
-  }, [productModuleId, productSubModuleId]);
+  }, []);
 
   useEffect(() => {
     if (!moduleId) {

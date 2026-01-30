@@ -181,6 +181,16 @@ export const rawMaterialsService = {
     const response = await api.delete(`/user/raw/material?${queryParams.toString()}`);
     return response.data;
   },
+
+  // Public endpoint for dropdowns
+  getRawMaterialsForDropdown: async (): Promise<RawMaterialsResponse> => {
+    const queryParams = new URLSearchParams();
+    queryParams.append('page', '1');
+    queryParams.append('size', '100');
+
+    const response = await api.get(`/raw/materials?${queryParams.toString()}`);
+    return response.data;
+  },
 };
 
 export default rawMaterialsService;

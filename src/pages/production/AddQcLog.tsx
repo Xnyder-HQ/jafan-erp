@@ -59,10 +59,7 @@ const AddQcLog = () => {
 
     const fetchOptions = async () => {
       try {
-        const response = await productionQcLogsService.getProductionBatches({
-          module_unique_id: moduleId,
-          sub_module_unique_id: subModuleId,
-        });
+        const response = await productionQcLogsService.getProductionBatches();
         if (response.success && response.data) {
           setBatches(response.data.rows || []);
         }

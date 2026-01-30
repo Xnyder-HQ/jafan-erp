@@ -166,6 +166,16 @@ export const vendorsService = {
     const response = await api.delete(`/user/vendor?${queryParams.toString()}`);
     return response.data;
   },
+
+  // Public endpoint for dropdowns
+  getVendorsForDropdown: async (): Promise<VendorsResponse> => {
+    const queryParams = new URLSearchParams();
+    queryParams.append('page', '1');
+    queryParams.append('size', '100');
+
+    const response = await api.get(`/vendors?${queryParams.toString()}`);
+    return response.data;
+  },
 };
 
 export default vendorsService;

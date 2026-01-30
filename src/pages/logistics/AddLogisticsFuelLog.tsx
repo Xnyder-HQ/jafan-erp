@@ -32,10 +32,6 @@ const AddLogisticsFuelLog = () => {
   const moduleId = accessIds?.module_unique_id;
   const subModuleId = accessIds?.sub_module_unique_id;
 
-  const vehicleAccessIds = getAccessIds('administration', 'vehicles');
-  const vehicleModuleId = vehicleAccessIds?.module_unique_id;
-  const vehicleSubModuleId = vehicleAccessIds?.sub_module_unique_id;
-
   const now = new Date();
   const defaultDateTime = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}T${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
 
@@ -60,18 +56,8 @@ const AddLogisticsFuelLog = () => {
 
   useEffect(() => {
     const fetchVehicles = async () => {
-      if (!vehicleModuleId || !vehicleSubModuleId) {
-        setLoadingOptions(false);
-        return;
-      }
-
       try {
-        const response = await vehiclesService.getVehicles({
-          page: 1,
-          size: 100,
-          module_unique_id: vehicleModuleId,
-          sub_module_unique_id: vehicleSubModuleId,
-        });
+        const response = await vehiclesService.getVehiclesForDropdown();
 
         if (response.success && response.data) {
           const rows = Array.isArray(response.data) ? response.data : response.data.rows;
@@ -85,7 +71,7 @@ const AddLogisticsFuelLog = () => {
     };
 
     fetchVehicles();
-  }, [vehicleModuleId, vehicleSubModuleId]);
+  }, []);
 
   useEffect(() => {
     if (!selectedVehicleId) {

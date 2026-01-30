@@ -36,14 +36,6 @@ const AddVendorPayment = () => {
   const moduleId = accessIds?.module_unique_id;
   const subModuleId = accessIds?.sub_module_unique_id;
 
-  const vendorAccessIds = getAccessIds('procurement-vendor-management', 'vendors');
-  const vendorModuleId = vendorAccessIds?.module_unique_id;
-  const vendorSubModuleId = vendorAccessIds?.sub_module_unique_id;
-
-  const poAccessIds = getAccessIds('procurement-vendor-management', 'purchase-orders');
-  const poModuleId = poAccessIds?.module_unique_id;
-  const poSubModuleId = poAccessIds?.sub_module_unique_id;
-
   const {
     register,
     handleSubmit,
@@ -79,15 +71,8 @@ const AddVendorPayment = () => {
   const watchVendor = watch('vendor_unique_id');
 
   const fetchVendors = useCallback(async () => {
-    if (!vendorModuleId || !vendorSubModuleId) return;
-
     try {
-      const response = await vendorsService.getVendors({
-        page: 1,
-        size: 100,
-        module_unique_id: vendorModuleId,
-        sub_module_unique_id: vendorSubModuleId,
-      });
+      const response = await vendorsService.getVendorsForDropdown();
 
       if (response.success && response.data && 'rows' in response.data) {
         setVendors(response.data.rows);
@@ -95,18 +80,11 @@ const AddVendorPayment = () => {
     } catch (err) {
       console.error('Failed to fetch vendors:', err);
     }
-  }, [vendorModuleId, vendorSubModuleId]);
+  }, []);
 
   const fetchPurchaseOrders = useCallback(async () => {
-    if (!poModuleId || !poSubModuleId) return;
-
     try {
-      const response = await purchaseOrdersService.getPurchaseOrders({
-        page: 1,
-        size: 100,
-        module_unique_id: poModuleId,
-        sub_module_unique_id: poSubModuleId,
-      });
+      const response = await purchaseOrdersService.getPurchaseOrdersForDropdown();
 
       if (response.success && response.data) {
         const orders = Array.isArray(response.data) ? response.data : response.data.rows || [];
@@ -115,7 +93,7 @@ const AddVendorPayment = () => {
     } catch (err) {
       console.error('Failed to fetch purchase orders:', err);
     }
-  }, [poModuleId, poSubModuleId]);
+  }, []);
 
   useEffect(() => {
     const loadData = async () => {

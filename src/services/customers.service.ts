@@ -184,6 +184,16 @@ export const customersService = {
     const response = await api.delete(`/user/customer?${queryParams.toString()}`);
     return response.data;
   },
+
+  // Public endpoint for dropdowns
+  getCustomersForDropdown: async (): Promise<CustomersResponse> => {
+    const queryParams = new URLSearchParams();
+    queryParams.append('page', '1');
+    queryParams.append('size', '100');
+
+    const response = await api.get(`/customers?${queryParams.toString()}`);
+    return response.data;
+  },
 };
 
 export default customersService;

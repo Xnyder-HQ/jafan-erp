@@ -205,6 +205,16 @@ export const finishedGoodsService = {
     const response = await api.put(`/user/finished/good/edit/product?${queryParams.toString()}`, { unique_id, ...payload });
     return response.data;
   },
+
+  // Public endpoint for dropdowns
+  getFinishedGoodsForDropdown: async (): Promise<FinishedGoodsResponse> => {
+    const queryParams = new URLSearchParams();
+    queryParams.append('page', '1');
+    queryParams.append('size', '100');
+
+    const response = await api.get(`/finished/goods?${queryParams.toString()}`);
+    return response.data;
+  },
 };
 
 export default finishedGoodsService;

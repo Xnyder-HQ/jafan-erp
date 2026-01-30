@@ -194,6 +194,16 @@ const machinesService = {
     });
     return response.data;
   },
+
+  // Public endpoint for dropdowns
+  getMachinesForDropdown: async (): Promise<MachinesResponse> => {
+    const queryParams = new URLSearchParams();
+    queryParams.append('page', '1');
+    queryParams.append('size', '100');
+
+    const response = await api.get(`/machines?${queryParams.toString()}`);
+    return response.data;
+  },
 };
 
 export default machinesService;

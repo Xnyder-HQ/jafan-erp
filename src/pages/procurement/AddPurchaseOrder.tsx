@@ -35,14 +35,6 @@ const AddPurchaseOrder = () => {
   const moduleId = accessIds?.module_unique_id;
   const subModuleId = accessIds?.sub_module_unique_id;
 
-  const vendorAccessIds = getAccessIds('procurement-vendor-management', 'vendors');
-  const vendorModuleId = vendorAccessIds?.module_unique_id;
-  const vendorSubModuleId = vendorAccessIds?.sub_module_unique_id;
-
-  const rawMaterialAccessIds = getAccessIds('inventory-stock-management', 'raw-materials');
-  const rawMaterialModuleId = rawMaterialAccessIds?.module_unique_id;
-  const rawMaterialSubModuleId = rawMaterialAccessIds?.sub_module_unique_id;
-
   const {
     register,
     handleSubmit,
@@ -64,15 +56,8 @@ const AddPurchaseOrder = () => {
   const watchRawMaterial = watch('raw_material_unique_id');
 
   const fetchVendors = useCallback(async () => {
-    if (!vendorModuleId || !vendorSubModuleId) return;
-
     try {
-      const response = await vendorsService.getVendors({
-        page: 1,
-        size: 100,
-        module_unique_id: vendorModuleId,
-        sub_module_unique_id: vendorSubModuleId,
-      });
+      const response = await vendorsService.getVendorsForDropdown();
 
       if (response.success && response.data && 'rows' in response.data) {
         setVendors(response.data.rows);
@@ -80,18 +65,11 @@ const AddPurchaseOrder = () => {
     } catch (err) {
       console.error('Failed to fetch vendors:', err);
     }
-  }, [vendorModuleId, vendorSubModuleId]);
+  }, []);
 
   const fetchRawMaterials = useCallback(async () => {
-    if (!rawMaterialModuleId || !rawMaterialSubModuleId) return;
-
     try {
-      const response = await rawMaterialsService.getRawMaterials({
-        page: 1,
-        size: 100,
-        module_unique_id: rawMaterialModuleId,
-        sub_module_unique_id: rawMaterialSubModuleId,
-      });
+      const response = await rawMaterialsService.getRawMaterialsForDropdown();
 
       if (response.success && response.data && 'rows' in response.data) {
         setRawMaterials(response.data.rows);
@@ -99,7 +77,7 @@ const AddPurchaseOrder = () => {
     } catch (err) {
       console.error('Failed to fetch raw materials:', err);
     }
-  }, [rawMaterialModuleId, rawMaterialSubModuleId]);
+  }, []);
 
   useEffect(() => {
     const loadData = async () => {

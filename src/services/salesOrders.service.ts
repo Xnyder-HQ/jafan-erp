@@ -259,6 +259,16 @@ export const salesOrdersService = {
     const response = await api.delete(`/user/sales/order?${queryParams.toString()}`);
     return response.data;
   },
+
+  // Public endpoint for dropdowns
+  getSalesOrdersForDropdown: async (): Promise<SalesOrdersResponse> => {
+    const queryParams = new URLSearchParams();
+    queryParams.append('page', '1');
+    queryParams.append('size', '100');
+
+    const response = await api.get(`/sales/orders?${queryParams.toString()}`);
+    return response.data;
+  },
 };
 
 export default salesOrdersService;

@@ -54,10 +54,7 @@ const AddFuelLog = () => {
 
     const fetchOptions = async () => {
       try {
-        const response = await productionFuelLogsService.getMachines({
-          module_unique_id: moduleId,
-          sub_module_unique_id: subModuleId,
-        });
+        const response = await productionFuelLogsService.getMachines();
         if (response.success && response.data) {
           setMachines(response.data.rows || []);
         }

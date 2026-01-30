@@ -36,10 +36,6 @@ const EditFuelPurchase = () => {
   const moduleId = accessIds?.module_unique_id;
   const subModuleId = accessIds?.sub_module_unique_id;
 
-  const rawMaterialAccessIds = getAccessIds('inventory-stock-management', 'raw-materials');
-  const rawMaterialModuleId = rawMaterialAccessIds?.module_unique_id;
-  const rawMaterialSubModuleId = rawMaterialAccessIds?.sub_module_unique_id;
-
   const {
     register,
     handleSubmit,
@@ -57,15 +53,8 @@ const EditFuelPurchase = () => {
   });
 
   const fetchRawMaterials = useCallback(async () => {
-    if (!rawMaterialModuleId || !rawMaterialSubModuleId) return;
-
     try {
-      const response = await rawMaterialsService.getRawMaterials({
-        page: 1,
-        size: 100,
-        module_unique_id: rawMaterialModuleId,
-        sub_module_unique_id: rawMaterialSubModuleId,
-      });
+      const response = await rawMaterialsService.getRawMaterialsForDropdown();
 
       if (response.success && response.data && 'rows' in response.data) {
         setRawMaterials(response.data.rows);
@@ -73,7 +62,7 @@ const EditFuelPurchase = () => {
     } catch (err) {
       console.error('Failed to fetch raw materials:', err);
     }
-  }, [rawMaterialModuleId, rawMaterialSubModuleId]);
+  }, []);
 
   useEffect(() => {
     if (!moduleId) {

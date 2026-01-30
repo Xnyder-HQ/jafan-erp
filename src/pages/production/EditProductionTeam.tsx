@@ -55,10 +55,7 @@ const EditProductionTeam = () => {
             module_unique_id: moduleId,
             sub_module_unique_id: subModuleId,
           }),
-          productionTeamsService.getMachines({
-            module_unique_id: moduleId,
-            sub_module_unique_id: subModuleId,
-          }),
+          productionTeamsService.getMachines(),
         ]);
 
         if (teamRes.success && teamRes.data) {

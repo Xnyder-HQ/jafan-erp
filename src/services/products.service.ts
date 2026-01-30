@@ -211,6 +211,16 @@ export const productsService = {
     const response = await api.delete(`/user/product?${queryParams.toString()}`);
     return response.data;
   },
+
+  // Public endpoint for dropdowns
+  getProductsForDropdown: async (): Promise<ProductsResponse> => {
+    const queryParams = new URLSearchParams();
+    queryParams.append('page', '1');
+    queryParams.append('size', '100');
+
+    const response = await api.get(`/products?${queryParams.toString()}`);
+    return response.data;
+  },
 };
 
 export default productsService;

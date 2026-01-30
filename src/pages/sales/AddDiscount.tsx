@@ -46,18 +46,8 @@ const AddDiscount = () => {
   const selectedOrderId = watch('sales_order_unique_id');
 
   const fetchSalesOrders = useCallback(async () => {
-    if (!accessIds) {
-      setLoadingSalesOrders(false);
-      return;
-    }
-
     try {
-      const response = await salesOrdersService.getSalesOrders({
-        page: 1,
-        size: 100,
-        module_unique_id: accessIds.module_unique_id,
-        sub_module_unique_id: accessIds.sub_module_unique_id,
-      });
+      const response = await salesOrdersService.getSalesOrdersForDropdown();
 
       if (response.success && response.data) {
         if (Array.isArray(response.data)) {
@@ -71,7 +61,7 @@ const AddDiscount = () => {
     } finally {
       setLoadingSalesOrders(false);
     }
-  }, [accessIds]);
+  }, []);
 
   useEffect(() => {
     fetchSalesOrders();

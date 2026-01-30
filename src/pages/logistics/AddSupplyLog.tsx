@@ -39,10 +39,6 @@ const AddSupplyLog = () => {
   const moduleId = accessIds?.module_unique_id;
   const subModuleId = accessIds?.sub_module_unique_id;
 
-  const daAccessIds = getAccessIds('logistics-supply-chain', 'delivery-assignments');
-  const daModuleId = daAccessIds?.module_unique_id;
-  const daSubModuleId = daAccessIds?.sub_module_unique_id;
-
   const soAccessIds = getAccessIds('sales-customer-management', 'sales-orders');
   const soModuleId = soAccessIds?.module_unique_id;
   const soSubModuleId = soAccessIds?.sub_module_unique_id;
@@ -74,18 +70,8 @@ const AddSupplyLog = () => {
 
   useEffect(() => {
     const fetchDeliveryAssignments = async () => {
-      if (!daModuleId || !daSubModuleId) {
-        setLoadingOptions(false);
-        return;
-      }
-
       try {
-        const response = await deliveryAssignmentsService.getDeliveryAssignments({
-          page: 1,
-          size: 100,
-          module_unique_id: daModuleId,
-          sub_module_unique_id: daSubModuleId,
-        });
+        const response = await deliveryAssignmentsService.getDeliveryAssignmentsForDropdown();
 
         if (response.success && response.data) {
           const rows = Array.isArray(response.data) ? response.data : response.data.rows;
@@ -99,7 +85,7 @@ const AddSupplyLog = () => {
     };
 
     fetchDeliveryAssignments();
-  }, [daModuleId, daSubModuleId]);
+  }, []);
 
   useEffect(() => {
     if (!selectedAssignmentId || !soModuleId) {

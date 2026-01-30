@@ -64,16 +64,9 @@ const AddInvoice = () => {
   }, [watchSalesOrderId, salesOrders]);
 
   const fetchSalesOrders = useCallback(async () => {
-    if (!salesOrderModuleId || !salesOrderSubModuleId) return;
-
     try {
       setLoadingOrders(true);
-      const response = await salesOrdersService.getSalesOrders({
-        page: 1,
-        size: 100,
-        module_unique_id: salesOrderModuleId,
-        sub_module_unique_id: salesOrderSubModuleId,
-      });
+      const response = await salesOrdersService.getSalesOrdersForDropdown();
 
       if (response.success && response.data) {
         const orders = 'rows' in response.data ? response.data.rows : response.data;

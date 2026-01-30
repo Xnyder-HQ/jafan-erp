@@ -33,14 +33,6 @@ const AddMaintenanceLog = () => {
   const moduleId = accessIds?.module_unique_id;
   const subModuleId = accessIds?.sub_module_unique_id;
 
-  const machineAccessIds = getAccessIds('administration', 'machines');
-  const machineModuleId = machineAccessIds?.module_unique_id;
-  const machineSubModuleId = machineAccessIds?.sub_module_unique_id;
-
-  const vendorAccessIds = getAccessIds('procurement-vendor-management', 'vendors');
-  const vendorModuleId = vendorAccessIds?.module_unique_id;
-  const vendorSubModuleId = vendorAccessIds?.sub_module_unique_id;
-
   const {
     register,
     handleSubmit,
@@ -60,46 +52,32 @@ const AddMaintenanceLog = () => {
     const fetchOptions = async () => {
       const promises: Promise<void>[] = [];
 
-      if (machineModuleId && machineSubModuleId) {
-        promises.push(
-          machinesService.getMachines({
-            page: 1,
-            size: 100,
-            module_unique_id: machineModuleId,
-            sub_module_unique_id: machineSubModuleId,
-          }).then((response) => {
-            if (response.success && response.data && 'rows' in response.data) {
-              setMachines(response.data.rows.filter((m) => m.is_active));
-            }
-          }).catch((err) => {
-            console.error('Failed to fetch machines:', err);
-          })
-        );
-      }
+      promises.push(
+        machinesService.getMachinesForDropdown().then((response) => {
+          if (response.success && response.data && 'rows' in response.data) {
+            setMachines(response.data.rows.filter((m) => m.is_active));
+          }
+        }).catch((err) => {
+          console.error('Failed to fetch machines:', err);
+        })
+      );
 
-      if (vendorModuleId && vendorSubModuleId) {
-        promises.push(
-          vendorsService.getVendors({
-            page: 1,
-            size: 100,
-            module_unique_id: vendorModuleId,
-            sub_module_unique_id: vendorSubModuleId,
-          }).then((response) => {
-            if (response.success && response.data && 'rows' in response.data) {
-              setVendors(response.data.rows);
-            }
-          }).catch((err) => {
-            console.error('Failed to fetch vendors:', err);
-          })
-        );
-      }
+      promises.push(
+        vendorsService.getVendorsForDropdown().then((response) => {
+          if (response.success && response.data && 'rows' in response.data) {
+            setVendors(response.data.rows);
+          }
+        }).catch((err) => {
+          console.error('Failed to fetch vendors:', err);
+        })
+      );
 
       await Promise.all(promises);
       setLoadingOptions(false);
     };
 
     fetchOptions();
-  }, [machineModuleId, machineSubModuleId, vendorModuleId, vendorSubModuleId]);
+  }, []);
 
   const onSubmit = async (data: MaintenanceLogFormData) => {
     if (!moduleId || !subModuleId) {

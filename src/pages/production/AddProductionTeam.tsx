@@ -48,10 +48,7 @@ const AddProductionTeam = () => {
 
     const fetchOptions = async () => {
       try {
-        const response = await productionTeamsService.getMachines({
-          module_unique_id: moduleId,
-          sub_module_unique_id: subModuleId,
-        });
+        const response = await productionTeamsService.getMachines();
         if (response.success && response.data) {
           setMachines(response.data.rows || []);
         }

@@ -31,10 +31,6 @@ const AddStackingLog = () => {
   const moduleId = accessIds?.module_unique_id;
   const subModuleId = accessIds?.sub_module_unique_id;
 
-  const fgAccessIds = getAccessIds('inventory-stock-management', 'finished-goods');
-  const fgModuleId = fgAccessIds?.module_unique_id;
-  const fgSubModuleId = fgAccessIds?.sub_module_unique_id;
-
   const {
     register,
     handleSubmit,
@@ -52,18 +48,8 @@ const AddStackingLog = () => {
 
   useEffect(() => {
     const fetchFinishedGoods = async () => {
-      if (!fgModuleId || !fgSubModuleId) {
-        setLoadingOptions(false);
-        return;
-      }
-
       try {
-        const response = await finishedGoodsService.getFinishedGoods({
-          page: 1,
-          size: 100,
-          module_unique_id: fgModuleId,
-          sub_module_unique_id: fgSubModuleId,
-        });
+        const response = await finishedGoodsService.getFinishedGoodsForDropdown();
 
         if (response.success && response.data && 'rows' in response.data) {
           setFinishedGoods(response.data.rows);
@@ -76,7 +62,7 @@ const AddStackingLog = () => {
     };
 
     fetchFinishedGoods();
-  }, [fgModuleId, fgSubModuleId]);
+  }, []);
 
   const onSubmit = async (data: StackingLogFormData) => {
     if (!moduleId || !subModuleId) {

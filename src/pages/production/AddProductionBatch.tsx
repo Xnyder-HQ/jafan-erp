@@ -58,15 +58,10 @@ const AddProductionBatch = () => {
 
     const fetchOptions = async () => {
       try {
-        const params = {
-          module_unique_id: moduleId,
-          sub_module_unique_id: subModuleId,
-        };
-
         const [machinesRes, teamsRes, goodsRes] = await Promise.all([
-          productionBatchesService.getMachines(params),
-          productionBatchesService.getProductionTeams(params),
-          productionBatchesService.getFinishedGoods(params),
+          productionBatchesService.getMachines(),
+          productionBatchesService.getProductionTeams(),
+          productionBatchesService.getFinishedGoods(),
         ]);
 
         if (machinesRes.success && machinesRes.data) {

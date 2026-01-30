@@ -33,10 +33,6 @@ const EditDeliveryAssignment = () => {
   const moduleId = accessIds?.module_unique_id;
   const subModuleId = accessIds?.sub_module_unique_id;
 
-  const vehicleAccessIds = getAccessIds('administration', 'vehicles');
-  const vehicleModuleId = vehicleAccessIds?.module_unique_id;
-  const vehicleSubModuleId = vehicleAccessIds?.sub_module_unique_id;
-
   const {
     register,
     handleSubmit,
@@ -51,15 +47,8 @@ const EditDeliveryAssignment = () => {
   });
 
   const fetchVehicles = useCallback(async () => {
-    if (!vehicleModuleId || !vehicleSubModuleId) return;
-
     try {
-      const response = await vehiclesService.getVehicles({
-        page: 1,
-        size: 100,
-        module_unique_id: vehicleModuleId,
-        sub_module_unique_id: vehicleSubModuleId,
-      });
+      const response = await vehiclesService.getVehiclesForDropdown();
 
       if (response.success && response.data && 'rows' in response.data) {
         setVehicles(response.data.rows);
@@ -67,7 +56,7 @@ const EditDeliveryAssignment = () => {
     } catch (err) {
       console.error('Failed to fetch vehicles:', err);
     }
-  }, [vehicleModuleId, vehicleSubModuleId]);
+  }, []);
 
   useEffect(() => {
     if (!moduleId || !id) {

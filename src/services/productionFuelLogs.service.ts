@@ -149,14 +149,12 @@ const productionFuelLogsService = {
     return response.data;
   },
 
-  getMachines: async (params: { module_unique_id: string; sub_module_unique_id?: string }): Promise<{ success: boolean; data: { rows: MachineOption[] } | null }> => {
+  getMachines: async (): Promise<{ success: boolean; data: { rows: MachineOption[] } | null }> => {
     const queryParams = new URLSearchParams();
     queryParams.append('page', '1');
     queryParams.append('size', '100');
-    queryParams.append('module_unique_id', params.module_unique_id);
-    if (params.sub_module_unique_id) queryParams.append('sub_module_unique_id', params.sub_module_unique_id);
 
-    const response = await api.get(`/user/machines?${queryParams.toString()}`);
+    const response = await api.get(`/machines?${queryParams.toString()}`);
     return response.data;
   },
 };

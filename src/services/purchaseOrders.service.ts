@@ -228,6 +228,16 @@ export const purchaseOrdersService = {
     const response = await api.delete(`/user/purchase/order?${query}`);
     return response.data;
   },
+
+  // Public endpoint for dropdowns
+  getPurchaseOrdersForDropdown: async (): Promise<PurchaseOrdersResponse> => {
+    const queryParams = new URLSearchParams();
+    queryParams.append('page', '1');
+    queryParams.append('size', '100');
+
+    const response = await api.get(`/purchase/orders?${queryParams.toString()}`);
+    return response.data;
+  },
 };
 
 export default purchaseOrdersService;

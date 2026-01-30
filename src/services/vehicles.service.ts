@@ -183,6 +183,16 @@ const vehiclesService = {
     });
     return response.data;
   },
+
+  // Public endpoint for dropdowns
+  getVehiclesForDropdown: async (): Promise<VehiclesResponse> => {
+    const queryParams = new URLSearchParams();
+    queryParams.append('page', '1');
+    queryParams.append('size', '100');
+
+    const response = await api.get(`/vehicles?${queryParams.toString()}`);
+    return response.data;
+  },
 };
 
 export default vehiclesService;

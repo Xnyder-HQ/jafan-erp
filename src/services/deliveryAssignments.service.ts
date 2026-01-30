@@ -194,6 +194,16 @@ export const deliveryAssignmentsService = {
     const response = await api.delete(`/user/delivery/assignment?${query}`);
     return response.data;
   },
+
+  // Public endpoint for dropdowns
+  getDeliveryAssignmentsForDropdown: async (): Promise<DeliveryAssignmentsResponse> => {
+    const queryParams = new URLSearchParams();
+    queryParams.append('page', '1');
+    queryParams.append('size', '100');
+
+    const response = await api.get(`/delivery/assignments?${queryParams.toString()}`);
+    return response.data;
+  },
 };
 
 export default deliveryAssignmentsService;
