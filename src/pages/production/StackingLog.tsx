@@ -320,7 +320,7 @@ const StackingLog = () => {
           { key: 'FinishedGood.name', header: 'Finished Good' },
           { key: 'FinishedGood.type', header: 'Type' },
           { key: 'blocks_stacked', header: 'Blocks Stacked' },
-          { key: 'stacking_rate', header: 'Rate (₦/block)' },
+          { key: 'stacking_rate', header: 'Rate (%)' },
           { key: 'breakage_quantity', header: 'Breakage' },
           { key: 'total_cost', header: 'Total Cost' },
           { key: 'notes', header: 'Notes' },
