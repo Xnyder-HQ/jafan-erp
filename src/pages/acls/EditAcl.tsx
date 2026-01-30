@@ -35,6 +35,8 @@ const EditAcl = () => {
     register,
     handleSubmit,
     reset,
+    watch,
+    setValue,
   } = useForm<EditAclFormData>({
     defaultValues: {
       add: false,
@@ -191,36 +193,67 @@ const EditAcl = () => {
         <form onSubmit={handleSubmit(onSubmit)} className="xui-form">
           <div className="xui-d-grid xui-grid-col-1 xui-md-grid-col-2 xui-grid-gap-2">
             <div>
-              <p className="xui-font-w-600 xui-mb-1">Permissions</p>
+              <div className="xui-d-flex xui-flex-ai-center xui-flex-jc-space-between xui-mb-1">
+                <p className="xui-font-w-600">Permissions</p>
+                <label className="xui-d-flex xui-flex-ai-center xui-grid-gap-half xui-cursor-pointer xui-font-sz-80">
+                  <input
+                    type="checkbox"
+                    checked={watch('add') && watch('edit') && watch('delete') && watch('elevated_role')}
+                    onChange={(e) => {
+                      const checked = e.target.checked;
+                      setValue('add', checked);
+                      setValue('edit', checked);
+                      setValue('delete', checked);
+                      setValue('elevated_role', checked);
+                    }}
+                  />
+                  <span className="xui-font-w-500">Check All</span>
+                </label>
+              </div>
 
               <div className="xui-p-1 xui-bg-light xui-bdr-rad-half xui-mb-1" style={{ border: '1px solid var(--neutral-200)' }}>
                 <div className="xui-d-flex xui-flex-dir-column xui-grid-gap-1">
-                  <label className="xui-d-flex xui-flex-ai-center xui-grid-gap-half xui-cursor-pointer">
-                    <input type="checkbox" {...register('add')} />
-                    <div>
-                      <span className="xui-font-w-500">Add</span>
-                      <span className="xui-d-block xui-font-sz-80 xui-opacity-5">Allow creating new records</span>
-                    </div>
-                  </label>
+                  {/* Row 1: View + Add */}
+                  <div className="xui-d-grid xui-grid-col-2 xui-grid-gap-1">
+                    <label className="xui-d-flex xui-flex-ai-center xui-grid-gap-half" style={{ opacity: 0.6 }}>
+                      <input type="checkbox" checked={true} disabled />
+                      <div>
+                        <span className="xui-font-w-500">View</span>
+                        <span className="xui-d-block xui-font-sz-80 xui-opacity-5">View records (default)</span>
+                      </div>
+                    </label>
 
-                  <label className="xui-d-flex xui-flex-ai-center xui-grid-gap-half xui-cursor-pointer">
-                    <input type="checkbox" {...register('edit')} />
-                    <div>
-                      <span className="xui-font-w-500">Edit</span>
-                      <span className="xui-d-block xui-font-sz-80 xui-opacity-5">Allow modifying existing records</span>
-                    </div>
-                  </label>
+                    <label className="xui-d-flex xui-flex-ai-center xui-grid-gap-half xui-cursor-pointer">
+                      <input type="checkbox" {...register('add')} />
+                      <div>
+                        <span className="xui-font-w-500">Add</span>
+                        <span className="xui-d-block xui-font-sz-80 xui-opacity-5">Create new records</span>
+                      </div>
+                    </label>
+                  </div>
 
-                  <label className="xui-d-flex xui-flex-ai-center xui-grid-gap-half xui-cursor-pointer">
-                    <input type="checkbox" {...register('delete')} />
-                    <div>
-                      <span className="xui-font-w-500">Delete</span>
-                      <span className="xui-d-block xui-font-sz-80 xui-opacity-5">Allow removing records</span>
-                    </div>
-                  </label>
+                  {/* Row 2: Edit + Delete */}
+                  <div className="xui-d-grid xui-grid-col-2 xui-grid-gap-1">
+                    <label className="xui-d-flex xui-flex-ai-center xui-grid-gap-half xui-cursor-pointer">
+                      <input type="checkbox" {...register('edit')} />
+                      <div>
+                        <span className="xui-font-w-500">Edit</span>
+                        <span className="xui-d-block xui-font-sz-80 xui-opacity-5">Modify records</span>
+                      </div>
+                    </label>
+
+                    <label className="xui-d-flex xui-flex-ai-center xui-grid-gap-half xui-cursor-pointer">
+                      <input type="checkbox" {...register('delete')} />
+                      <div>
+                        <span className="xui-font-w-500">Delete</span>
+                        <span className="xui-d-block xui-font-sz-80 xui-opacity-5">Remove records</span>
+                      </div>
+                    </label>
+                  </div>
 
                   <hr className="xui-my-half" />
 
+                  {/* Row 3: Elevated Role */}
                   <label className="xui-d-flex xui-flex-ai-center xui-grid-gap-half xui-cursor-pointer">
                     <input type="checkbox" {...register('elevated_role')} />
                     <div>

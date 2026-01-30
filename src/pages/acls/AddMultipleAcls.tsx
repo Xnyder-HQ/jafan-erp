@@ -293,47 +293,82 @@ const AddMultipleAcls = () => {
                     </div>
 
                     <div>
-                      <p className="xui-font-w-500 xui-mb-half xui-font-sz-85">Permissions</p>
+                      <div className="xui-d-flex xui-flex-ai-center xui-flex-jc-space-between xui-mb-half">
+                        <p className="xui-font-w-500 xui-font-sz-85">Permissions</p>
+                        <label className="xui-d-flex xui-flex-ai-center xui-grid-gap-half xui-cursor-pointer xui-font-sz-80">
+                          <input
+                            type="checkbox"
+                            checked={row.add && row.edit && row.delete && row.elevated_role}
+                            onChange={(e) => {
+                              const checked = e.target.checked;
+                              updateRow(index, 'add', checked);
+                              updateRow(index, 'edit', checked);
+                              updateRow(index, 'delete', checked);
+                              updateRow(index, 'elevated_role', checked);
+                            }}
+                          />
+                          <span className="xui-font-w-500">Check All</span>
+                        </label>
+                      </div>
                       <div className="xui-p-1 xui-bg-light xui-bdr-rad-half" style={{ border: '1px solid var(--neutral-200)' }}>
                         <div className="xui-d-flex xui-flex-dir-column xui-grid-gap-1">
-                          <label className="xui-d-flex xui-flex-ai-center xui-grid-gap-half xui-cursor-pointer">
-                            <input
-                              type="checkbox"
-                              checked={row.add}
-                              onChange={(e) => updateRow(index, 'add', e.target.checked)}
-                            />
-                            <div>
-                              <span className="xui-font-w-500">Add</span>
-                              <span className="xui-d-block xui-font-sz-80 xui-opacity-5">Allow creating new records</span>
-                            </div>
-                          </label>
+                          {/* Row 1: View + Add */}
+                          <div className="xui-d-grid xui-grid-col-2 xui-grid-gap-1">
+                            <label className="xui-d-flex xui-flex-ai-center xui-grid-gap-half" style={{ opacity: 0.6 }}>
+                              <input
+                                type="checkbox"
+                                checked={true}
+                                disabled
+                              />
+                              <div>
+                                <span className="xui-font-w-500">View</span>
+                                <span className="xui-d-block xui-font-sz-80 xui-opacity-5">View records (default)</span>
+                              </div>
+                            </label>
 
-                          <label className="xui-d-flex xui-flex-ai-center xui-grid-gap-half xui-cursor-pointer">
-                            <input
-                              type="checkbox"
-                              checked={row.edit}
-                              onChange={(e) => updateRow(index, 'edit', e.target.checked)}
-                            />
-                            <div>
-                              <span className="xui-font-w-500">Edit</span>
-                              <span className="xui-d-block xui-font-sz-80 xui-opacity-5">Allow modifying existing records</span>
-                            </div>
-                          </label>
+                            <label className="xui-d-flex xui-flex-ai-center xui-grid-gap-half xui-cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={row.add}
+                                onChange={(e) => updateRow(index, 'add', e.target.checked)}
+                              />
+                              <div>
+                                <span className="xui-font-w-500">Add</span>
+                                <span className="xui-d-block xui-font-sz-80 xui-opacity-5">Create new records</span>
+                              </div>
+                            </label>
+                          </div>
 
-                          <label className="xui-d-flex xui-flex-ai-center xui-grid-gap-half xui-cursor-pointer">
-                            <input
-                              type="checkbox"
-                              checked={row.delete}
-                              onChange={(e) => updateRow(index, 'delete', e.target.checked)}
-                            />
-                            <div>
-                              <span className="xui-font-w-500">Delete</span>
-                              <span className="xui-d-block xui-font-sz-80 xui-opacity-5">Allow removing records</span>
-                            </div>
-                          </label>
+                          {/* Row 2: Edit + Delete */}
+                          <div className="xui-d-grid xui-grid-col-2 xui-grid-gap-1">
+                            <label className="xui-d-flex xui-flex-ai-center xui-grid-gap-half xui-cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={row.edit}
+                                onChange={(e) => updateRow(index, 'edit', e.target.checked)}
+                              />
+                              <div>
+                                <span className="xui-font-w-500">Edit</span>
+                                <span className="xui-d-block xui-font-sz-80 xui-opacity-5">Modify records</span>
+                              </div>
+                            </label>
+
+                            <label className="xui-d-flex xui-flex-ai-center xui-grid-gap-half xui-cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={row.delete}
+                                onChange={(e) => updateRow(index, 'delete', e.target.checked)}
+                              />
+                              <div>
+                                <span className="xui-font-w-500">Delete</span>
+                                <span className="xui-d-block xui-font-sz-80 xui-opacity-5">Remove records</span>
+                              </div>
+                            </label>
+                          </div>
 
                           <hr className="xui-my-half" />
 
+                          {/* Row 3: Elevated Role */}
                           <label className="xui-d-flex xui-flex-ai-center xui-grid-gap-half xui-cursor-pointer">
                             <input
                               type="checkbox"
@@ -347,9 +382,6 @@ const AddMultipleAcls = () => {
                           </label>
                         </div>
                       </div>
-                      <small className="xui-opacity-5 xui-d-block xui-mt-half">
-                        View permission is automatically granted.
-                      </small>
                     </div>
                   </div>
                 </div>
