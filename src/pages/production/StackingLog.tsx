@@ -242,7 +242,7 @@ const StackingLog = () => {
                     <th>Stack Date</th>
                     <th>Finished Good</th>
                     <th>Blocks Stacked</th>
-                    <th>Rate (₦/block)</th>
+                    <th>Rate</th>
                     <th>Breakage</th>
                     <th>Total Cost</th>
                     <th>Notes</th>
@@ -272,7 +272,7 @@ const StackingLog = () => {
                         {log.blocks_stacked.toLocaleString()}
                       </td>
                       <td className="xui-font-sz-80">
-                        {formatCurrency(log.stacking_rate)}
+                        {log.stacking_rate}%
                       </td>
                       <td>
                         <span style={{ color: log.breakage_quantity > 0 ? 'var(--error)' : 'var(--neutral-500)' }}>
