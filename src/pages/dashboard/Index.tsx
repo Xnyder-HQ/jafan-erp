@@ -23,8 +23,14 @@ const Dashboard = () => {
 
   const moduleId = acls.length > 0 ? acls[0].module_unique_id : '';
   const userRole = acls[0]?.Role?.name || 'User';
+  const isAdministrator = userRole.toLowerCase() === 'administrator';
 
   const fetchStats = useCallback(async () => {
+    if (!isAdministrator) {
+      setLoading(false);
+      return;
+    }
+
     if (!moduleId) {
       setError('No module access found');
       setLoading(false);
@@ -45,7 +51,7 @@ const Dashboard = () => {
     } finally {
       setLoading(false);
     }
-  }, [moduleId]);
+  }, [moduleId, isAdministrator]);
 
   useEffect(() => {
     fetchStats();
@@ -73,7 +79,12 @@ const Dashboard = () => {
           </p>
         </div>
 
-        {loading ? (
+        {!isAdministrator ? (
+          <div className="xui-py-3 xui-text-center xui-bg-white xui-bdr-rad-half" style={{ border: '1px solid var(--neutral-200)' }}>
+            <p className="xui-font-sz-90 xui-opacity-6">You do not have access to view the dashboard data.</p>
+            <p className="xui-font-sz-80 xui-opacity-5 xui-mt-half">Please contact an administrator if you believe this is an error.</p>
+          </div>
+        ) : loading ? (
           <div className="xui-py-3 xui-text-center">
             <p>Loading dashboard...</p>
           </div>
